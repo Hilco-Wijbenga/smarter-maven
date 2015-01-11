@@ -1,0 +1,25 @@
+package org.cavebeetle.maven;
+
+/**
+ * The current version of the Smarter Maven extension.
+ */
+public enum SmartMavenExtensionVersion
+        implements
+            MavenVersion
+{
+    /** @VERSION@ */
+    VERSION(
+            "@VERSION@");
+    private final String version;
+
+    private SmartMavenExtensionVersion(final String version)
+    {
+        this.version = version;
+    }
+
+    @Override
+    public String toString()
+    {
+        return version;
+    }
+}

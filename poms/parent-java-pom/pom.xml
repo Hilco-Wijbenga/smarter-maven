@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2015 H.C. Wijbenga
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                        http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cavebeetle</groupId>
+        <artifactId>parent-pom</artifactId>
+        <version>1</version>
+        <relativePath>../parent-pom</relativePath>
+    </parent>
+
+    <groupId>org.cavebeetle</groupId>
+    <artifactId>parent-java-pom</artifactId>
+    <version>1</version>
+    <packaging>pom</packaging>
+
+    <name>Parent Java POM</name>
+
+    <properties>
+
+        <!-- API versions -->
+        <guice-api.version>1.0</guice-api.version>
+        <io-api.version>1.0</io-api.version>
+        <maven-api.version>1.0</maven-api.version>
+
+        <!-- Implementation versions -->
+        <io-impl.version>1.0</io-impl.version>
+        <maven-impl.version>1.0</maven-impl.version>
+
+        <!-- Smarter Maven Extension version -->
+        <smarter-maven-extension.version>1.0</smarter-maven-extension.version>
+
+    </properties>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.13</version>
+
+                <executions>
+
+                    <execution>
+
+                        <id>check-jdk-16-compatibility</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <signature>
+                                <groupId>org.codehaus.mojo.signature</groupId>
+                                <artifactId>java16</artifactId>
+                                <version>1.0</version>
+                            </signature>
+
+                        </configuration>
+
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+
+            </plugin>
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>
