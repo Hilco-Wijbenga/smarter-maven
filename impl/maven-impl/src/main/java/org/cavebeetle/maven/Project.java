@@ -55,11 +55,11 @@ public interface Project
     File getBaseDir();
 
     /**
-     * Gets the "target" directory.
+     * Gets the build directory. This is usually {@code target}.
      *
-     * @return the "target" directory.
+     * @return the build directory.
      */
-    File getTargetDir();
+    File getBuildDir();
 
     /**
      * Gets the {@code Gav} that uniquely identifies this {@code Project}.

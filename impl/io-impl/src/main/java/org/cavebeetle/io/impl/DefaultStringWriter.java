@@ -1,5 +1,6 @@
 package org.cavebeetle.io.impl;
 
+import static org.cavebeetle.io.InternalApi.END_OF_LINE;
 import javax.inject.Singleton;
 import org.cavebeetle.io.StringWriter;
 
@@ -51,5 +52,12 @@ public final class DefaultStringWriter
             final String s)
     {
         builder.append(s);
+    }
+
+    @Override
+    public void writeLine(
+            final String text)
+    {
+        write(text + END_OF_LINE);
     }
 }

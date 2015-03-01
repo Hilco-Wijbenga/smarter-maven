@@ -48,7 +48,8 @@ public final class DefaultFileHashGenerator
             final InputStream inputStream = ioApi.newInputStream(file);
             try
             {
-                return generate(inputStream);
+                final Digest digest = internalApi.newCryptographicHash(MD5).generateDigest(inputStream);
+                return digest;
             }
             finally
             {
@@ -63,9 +64,9 @@ public final class DefaultFileHashGenerator
 
     @Override
     public Digest generate(
-            final InputStream inputStream)
+            final Iterable<String> lines)
     {
-        final Digest digest = internalApi.newCryptographicHash(MD5).generateDigest(inputStream);
+        final Digest digest = internalApi.newCryptographicHash(MD5).generateDigest(lines);
         return digest;
     }
 }

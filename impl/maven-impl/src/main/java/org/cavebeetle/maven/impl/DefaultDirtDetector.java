@@ -2,29 +2,28 @@ package org.cavebeetle.maven.impl;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
-import static org.cavebeetle.maven.DirtyReason.CHANGES_DETECTED;
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 import static org.cavebeetle.maven.DirtyReason.NOT_DIRTY;
-import static org.cavebeetle.maven.DirtyReason.NOT_IN_LOCAL_REPO;
-import static org.cavebeetle.maven.DirtyReason.NO_BUILD_DIRECTORY;
-import static org.cavebeetle.maven.DirtyReason.NO_HASH_FILE;
 import static org.cavebeetle.maven.DirtyReason.PUBLISHED;
 import static org.cavebeetle.maven.SourceFilesHashGenerator.SOURCE_FILES_LISTING;
 import static org.cavebeetle.maven.impl.Equalizer.isEqual;
 import java.io.File;
+import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.cavebeetle.maven.ArtifactDetector;
-import org.cavebeetle.maven.Digest;
 import org.cavebeetle.maven.DirtDetector;
 import org.cavebeetle.maven.DirtyReason;
-import org.cavebeetle.maven.FileHashGenerator;
 import org.cavebeetle.maven.GavGenerator;
 import org.cavebeetle.maven.GavToProjectMap;
 import org.cavebeetle.maven.InternalApi;
 import org.cavebeetle.maven.Project;
 import org.cavebeetle.maven.SnapshotDetector;
+import org.cavebeetle.maven.SourceFilesDigest;
 import org.cavebeetle.maven.SourceFilesHashGenerator;
 import org.codehaus.plexus.logging.Logger;
 import com.google.common.base.Optional;
@@ -73,7 +72,6 @@ public final class DefaultDirtDetector
     }
 
     private final InternalApi internalApi;
-    private final FileHashGenerator fileHashGenerator;
     private final SnapshotDetector snapshotDetector;
     private final ArtifactDetector artifactDetector;
     private final GavGenerator gavGenerator;
@@ -91,7 +89,6 @@ public final class DefaultDirtDetector
     {
         this.internalApi = internalApi;
         artifactDetector = internalApi.getArtifactDetector();
-        fileHashGenerator = internalApi.getFileHashGenerator();
         gavGenerator = internalApi.getGavGenerator();
         snapshotDetector = internalApi.getSnapshotDetector();
         sourceFilesHashGenerator = internalApi.getSourceFilesHashGenerator();
@@ -111,27 +108,62 @@ public final class DefaultDirtDetector
         }
         final File targetDir = new File(mavenProject.getBuild().getDirectory());
         final boolean targetDirExists = targetDir.exists();
-        final boolean artifactInLocalRepository = artifactDetector.hasArtifactInLocalRepository(session, mavenProject);
-        final File projectHashFile = new File(targetDir, SOURCE_FILES_LISTING);
-        final boolean projectHashFileExists = projectHashFile.exists();
         if (!targetDirExists)
         {
-            return NO_BUILD_DIRECTORY;
+            final String projectRootDir = session.getExecutionRootDirectory();
+            final String target = targetDir.getPath().substring(projectRootDir.length() + 1);
+            return internalApi.newDirtyReason(true, "No build directory (" + target + ")");
         }
+        final boolean artifactInLocalRepository = artifactDetector.hasArtifactInLocalRepository(session, mavenProject);
         if (!artifactInLocalRepository)
         {
-            return NOT_IN_LOCAL_REPO;
+            final File localMavenRepoDir = artifactDetector.getLocalRepositoryDirectory(session);
+            final String userHomeDir = System.getProperty("user.home");
+            final String localMavenRepo = localMavenRepoDir.getPath().startsWith(userHomeDir)
+                ? "~" + localMavenRepoDir.getPath().substring(userHomeDir.length())
+                : localMavenRepoDir.getPath();
+            return internalApi.newDirtyReason(true, "Not in local repo (" + localMavenRepo + ")");
         }
+        final File projectHashFile = new File(targetDir, SOURCE_FILES_LISTING);
+        final boolean projectHashFileExists = projectHashFile.exists();
+        final String projectRootDir = session.getExecutionRootDirectory();
+        final String projectHash = projectHashFile.getPath().substring(projectRootDir.length() + 1);
         if (!projectHashFileExists)
         {
-            return NO_HASH_FILE;
+            return internalApi.newDirtyReason(true, "No source file digest (" + projectHash + ")");
         }
-        final Digest currentProjectHash = fileHashGenerator.generate(projectHashFile);
         final Project project = gavToProjectMap.getProject(gavGenerator.getGav(mavenProject));
-        final Digest projectHash = sourceFilesHashGenerator.generate(project);
-        if (!isEqual(currentProjectHash, projectHash))
+        final SourceFilesDigest expectedProjectSourceFilesDigest = internalApi.newSourceFilesDigest(projectHashFile);
+        final int digestLength = expectedProjectSourceFilesDigest.getDigest().toString().length();
+        final Set<String> files = newHashSet();
+        final Map<String, String> expectedFileToDigestMap = newHashMap();
+        try
         {
-            return CHANGES_DETECTED;
+            for (final String line : expectedProjectSourceFilesDigest)
+            {
+                final String digest = line.substring(0, digestLength);
+                final String file = line.substring(digestLength + 1);
+                files.add(file);
+                expectedFileToDigestMap.put(file, digest);
+            }
+        }
+        catch (final Exception exception)
+        {
+            return internalApi.newDirtyReason(true, "Invalid/corrupt source file digest (" + projectHash + ")");
+        }
+        final SourceFilesDigest actualProjectSourceFilesDigest = sourceFilesHashGenerator.generate(project);
+        if (!isEqual(expectedProjectSourceFilesDigest, actualProjectSourceFilesDigest))
+        {
+            final Map<String, String> actualFileToDigestMap = newHashMap();
+            for (final String line : actualProjectSourceFilesDigest)
+            {
+                final String digest = line.substring(0, digestLength);
+                final String file = line.substring(digestLength + 1);
+                files.add(file);
+                actualFileToDigestMap.put(file, digest);
+            }
+            final String changedFile = findChangedFile(files, expectedFileToDigestMap, actualFileToDigestMap);
+            return internalApi.newDirtyReason(true, changedFile);
         }
         final Optional<Project> maybeFirstDirtyDependency = hasDirtyDependency(project, includeModules);
         if (maybeFirstDirtyDependency.isPresent())
@@ -139,5 +171,33 @@ public final class DefaultDirtDetector
             return internalApi.newDirtyReason(true, maybeFirstDirtyDependency.get().getGav().toString());
         }
         return NOT_DIRTY;
+    }
+
+    private String findChangedFile(
+            final Set<String> files,
+            final Map<String, String> expectedFileToDigestMap,
+            final Map<String, String> actualFileToDigestMap)
+    {
+        for (final String file : files)
+        {
+            if (!expectedFileToDigestMap.containsKey(file))
+            {
+                return "+ " + file;
+            }
+            else if (!actualFileToDigestMap.containsKey(file))
+            {
+                return "- " + file;
+            }
+            else
+            {
+                final String expectedDigest = expectedFileToDigestMap.get(file);
+                final String actualDigest = actualFileToDigestMap.get(file);
+                if (!expectedDigest.equals(actualDigest))
+                {
+                    return file;
+                }
+            }
+        }
+        throw new IllegalStateException("This should never happen.");
     }
 }

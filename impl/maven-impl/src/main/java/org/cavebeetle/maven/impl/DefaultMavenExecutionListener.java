@@ -216,6 +216,7 @@ public final class DefaultMavenExecutionListener
     public void sessionEnded(
             final ExecutionEvent event)
     {
+        delegate.sessionEnded(event);
         final List<String> warnings = invalidProjectHierarchyDetector.getProjectHierarchyWarnings(gavToProjectMap);
         if (!warnings.isEmpty())
         {
@@ -233,6 +234,5 @@ public final class DefaultMavenExecutionListener
             logger.warn("");
             logger.warn("");
         }
-        delegate.sessionEnded(event);
     }
 }

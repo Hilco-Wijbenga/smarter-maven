@@ -1,6 +1,6 @@
 package org.cavebeetle.maven;
 
-import static org.cavebeetle.guice.Bootstrap.GUICE;
+import static com.google.inject.Guice.createInjector;
 import static org.cavebeetle.maven.SmartMavenExtensionVersion.VERSION;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
@@ -10,6 +10,8 @@ import org.apache.maven.rtinfo.RuntimeInformation;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 
 /**
  * The Smarter Maven extension determines which modules of a reactor build must be rebuilt.
@@ -34,7 +36,9 @@ public final class SmarterMavenExtension
      */
     public SmarterMavenExtension()
     {
-        mavenExtension = GUICE.getInstance(MavenApi.class).getMavenExtension();
+        final AbstractModule guiceModule = new GuiceModule();
+        final Injector injector = createInjector(guiceModule);
+        mavenExtension = injector.getInstance(MavenApi.class).getMavenExtension();
     }
 
     @Override

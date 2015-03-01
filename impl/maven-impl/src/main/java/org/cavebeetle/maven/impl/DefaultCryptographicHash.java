@@ -1,6 +1,7 @@
 package org.cavebeetle.maven.impl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.cavebeetle.io.IoApi.END_OF_LINE;
 import java.security.MessageDigest;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -87,6 +88,20 @@ public final class DefaultCryptographicHash
                 break;
             }
             messageDigest.update(buffer, 0, byteCount);
+        }
+        return internalApi.newDigest(messageDigest.digest());
+    }
+
+    @Override
+    public Digest generateDigest(
+            final Iterable<String> lines)
+    {
+        checkNotNull(lines, "Missing 'lines'.");
+        final MessageDigest messageDigest = cryptographicHashAlgorithm.newMessageDigest();
+        for (final String line : lines)
+        {
+            final String line_ = line + END_OF_LINE;
+            messageDigest.update(line_.getBytes());
         }
         return internalApi.newDigest(messageDigest.digest());
     }

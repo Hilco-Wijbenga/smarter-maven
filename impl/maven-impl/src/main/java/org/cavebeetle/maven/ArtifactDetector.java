@@ -1,5 +1,6 @@
 package org.cavebeetle.maven;
 
+import java.io.File;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 
@@ -20,6 +21,16 @@ public interface ArtifactDetector
     boolean hasArtifactInLocalRepository(
             MavenSession session,
             MavenProject project);
+
+    /**
+     * Returns the location of the local Maven repo. Normally, this is {@code ~/.m2/repository}.
+     *
+     * @param mavenSession
+     *            the {@code MavenSession} instance.
+     * @return the location of the local Maven repo.
+     */
+    File getLocalRepositoryDirectory(
+            MavenSession mavenSession);
 
     /**
      * Returns whether the given project is available in a remote repository.

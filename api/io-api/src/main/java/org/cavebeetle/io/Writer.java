@@ -52,4 +52,13 @@ public interface Writer
      */
     void write(
             String text);
+
+    /**
+     * Writes the given text and append an end-of-line. The type of end-of-line depends on the OS.
+     *
+     * @param text
+     *            the text to write.
+     */
+    void writeLine(
+            String text);
 }

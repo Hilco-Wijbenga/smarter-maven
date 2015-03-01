@@ -8,6 +8,8 @@ public final class Equalizer
     /**
      * Returns whether the left and right instances are equal.
      *
+     * @param <T>
+     *            the type parameter.
      * @param left
      *            the left instance (may be {@code null}).
      * @param right

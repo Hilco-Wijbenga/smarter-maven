@@ -24,8 +24,7 @@ public final class DefaultSnapshotDetector
         {
             final Artifact artifact = mavenProject.getArtifact();
             final ArtifactVersion artifactVersion = artifact.getSelectedVersion();
-            final String qualifier = artifactVersion.getQualifier();
-            return "SNAPSHOT".equals(qualifier);
+            return isSnapshot(artifactVersion.toString());
         }
         catch (final Exception e)
         {
@@ -37,13 +36,19 @@ public final class DefaultSnapshotDetector
     public boolean isSnapshot(
             final Dependency dependency)
     {
-        return dependency.getVersion().endsWith("-SNAPSHOT");
+        return isSnapshot(dependency.getVersion());
     }
 
     @Override
     public boolean isSnapshot(
             final Gav gav)
     {
-        return gav.getVersion().toString().endsWith("-SNAPSHOT");
+        return isSnapshot(gav.getVersion().toString());
+    }
+
+    private boolean isSnapshot(
+            final String version)
+    {
+        return version.endsWith("-SNAPSHOT");
     }
 }

@@ -32,6 +32,15 @@ public final class DefaultArtifactDetector
     }
 
     @Override
+    public File getLocalRepositoryDirectory(
+            final MavenSession mavenSession)
+    {
+        final ArtifactRepository artifactRepository = mavenSession.getLocalRepository();
+        final File localRepositoryDir = new File(artifactRepository.getBasedir());
+        return localRepositoryDir;
+    }
+
+    @Override
     public boolean hasArtifactInRemoteRepository(
             final MavenProject mavenProject)
     {

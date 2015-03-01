@@ -74,7 +74,7 @@ public final class DefaultCryptographicHashTest
     {
         try
         {
-            cryptographicHash.generateDigest(null);
+            cryptographicHash.generateDigest((InputStream) null);
             fail("Expected a NullPointerException.");
         }
         catch (final NullPointerException e)

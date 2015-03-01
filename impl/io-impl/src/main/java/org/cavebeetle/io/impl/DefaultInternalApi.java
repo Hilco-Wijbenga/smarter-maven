@@ -1,5 +1,6 @@
 package org.cavebeetle.io.impl;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.File;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -8,6 +9,8 @@ import org.cavebeetle.io.InputStream;
 import org.cavebeetle.io.InternalApi;
 import org.cavebeetle.io.SourceFiles;
 import org.cavebeetle.io.StringWriter;
+import org.cavebeetle.io.TextFile;
+import org.cavebeetle.io.TextFileReader;
 import com.google.inject.Injector;
 
 /**
@@ -30,6 +33,7 @@ public final class DefaultInternalApi
     public DefaultInternalApi(
             final Injector injector)
     {
+        checkNotNull(injector, "Missing 'injector'.");
         this.injector = injector;
     }
 
@@ -65,5 +69,26 @@ public final class DefaultInternalApi
             final File file)
     {
         return injector.getInstance(FileWriter.Builder.class).newWriter(file);
+    }
+
+    @Override
+    public TextFileReader newTextFileReader(
+            final File file)
+    {
+        return injector.getInstance(TextFileReader.Builder.class).newTextFileReader(file);
+    }
+
+    @Override
+    public TextFileReader newTextFileReader(
+            final String text)
+    {
+        return injector.getInstance(TextFileReader.Builder.class).newTextFileReader(text);
+    }
+
+    @Override
+    public TextFile newTextFile(
+            final File file)
+    {
+        return injector.getInstance(TextFile.Builder.class).newTextFile(file);
     }
 }

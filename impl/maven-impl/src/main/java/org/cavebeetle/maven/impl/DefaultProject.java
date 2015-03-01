@@ -72,7 +72,7 @@ public final class DefaultProject
     private final Logger logger;
     private final MavenProject mavenProject;
     private final Gav gav;
-    private final File targetDir;
+    private final File buildDir;
     private final ProjectBuilder projectBuilder;
     private final MavenSession session;
     private final GavToProjectMap gavToProjectMap;
@@ -112,7 +112,7 @@ public final class DefaultProject
         this.mavenProject = mavenProject;
         this.gavToProjectMap = gavToProjectMap;
         gav = gavGenerator.getGav(mavenProject);
-        targetDir = new File(mavenProject.getBuild().getDirectory());
+        buildDir = new File(mavenProject.getBuild().getDirectory());
     }
 
     @Override
@@ -128,9 +128,9 @@ public final class DefaultProject
     }
 
     @Override
-    public File getTargetDir()
+    public File getBuildDir()
     {
-        return targetDir;
+        return buildDir;
     }
 
     @Override

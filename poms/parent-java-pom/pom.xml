@@ -25,32 +25,16 @@
     <parent>
         <groupId>org.cavebeetle</groupId>
         <artifactId>parent-pom</artifactId>
-        <version>1</version>
+        <version>2</version>
         <relativePath>../parent-pom</relativePath>
     </parent>
 
     <groupId>org.cavebeetle</groupId>
     <artifactId>parent-java-pom</artifactId>
-    <version>1</version>
+    <version>2</version>
     <packaging>pom</packaging>
 
     <name>Parent Java POM</name>
-
-    <properties>
-
-        <!-- API versions -->
-        <guice-api.version>1.0</guice-api.version>
-        <io-api.version>1.0</io-api.version>
-        <maven-api.version>1.0</maven-api.version>
-
-        <!-- Implementation versions -->
-        <io-impl.version>1.0</io-impl.version>
-        <maven-impl.version>1.0</maven-impl.version>
-
-        <!-- Smarter Maven Extension version -->
-        <smarter-maven-extension.version>1.0</smarter-maven-extension.version>
-
-    </properties>
 
     <build>
 

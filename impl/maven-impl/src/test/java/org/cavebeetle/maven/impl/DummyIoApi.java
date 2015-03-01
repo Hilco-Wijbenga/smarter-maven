@@ -4,6 +4,8 @@ import java.io.File;
 import org.cavebeetle.io.InputStream;
 import org.cavebeetle.io.IoApi;
 import org.cavebeetle.io.SourceFiles;
+import org.cavebeetle.io.TextFile;
+import org.cavebeetle.io.TextFileReader;
 import org.cavebeetle.io.Writer;
 
 /**
@@ -42,6 +44,27 @@ public final class DummyIoApi
 
     @Override
     public Writer newWriter(
+            final File file)
+    {
+        return null;
+    }
+
+    @Override
+    public TextFileReader newTextFileReader(
+            final File file)
+    {
+        return null;
+    }
+
+    @Override
+    public TextFileReader newTextFileReader(
+            final String text)
+    {
+        return null;
+    }
+
+    @Override
+    public TextFile newTextFile(
             final File file)
     {
         return null;

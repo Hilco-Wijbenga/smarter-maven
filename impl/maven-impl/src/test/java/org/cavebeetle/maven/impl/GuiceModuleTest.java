@@ -26,6 +26,7 @@ import org.cavebeetle.maven.MavenExecutionListener;
 import org.cavebeetle.maven.MavenExtension;
 import org.cavebeetle.maven.Project;
 import org.cavebeetle.maven.SnapshotDetector;
+import org.cavebeetle.maven.SourceFilesDigest;
 import org.cavebeetle.maven.SourceFilesHashGenerator;
 import org.cavebeetle.maven.Version;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public final class GuiceModuleTest
     @Before
     public void setUp()
     {
-        final GuiceModule guiceModule = new GuiceModule();
+        final MavenGuiceModule guiceModule = new MavenGuiceModule();
         injector = createInjector(guiceModule, new DummyGuiceModule());
     }
 
@@ -55,7 +56,7 @@ public final class GuiceModuleTest
     @Test
     public final void check_that_no_Guice_bindings_were_missed()
     {
-        assertEquals(24, injector.getBindings().size() - 4);
+        assertEquals(25, injector.getBindings().size() - 4);
     }
 
     /**
@@ -327,6 +328,17 @@ public final class GuiceModuleTest
     public final void check_that_Guice_creates_a_singleton_DirtyReason_Builder()
     {
         final Class<DirtyReason.Builder> instanceType = DirtyReason.Builder.class;
+        assertNotNull(injector.getInstance(instanceType));
+        assertSame(injector.getInstance(instanceType), injector.getInstance(instanceType));
+    }
+
+    /**
+     * Checks that Guice creates a singleton {@code SourceFilesDigest.Builder}.
+     */
+    @Test
+    public final void check_that_Guice_creates_a_singleton_SourceFilesDigest_Builder()
+    {
+        final Class<SourceFilesDigest.Builder> instanceType = SourceFilesDigest.Builder.class;
         assertNotNull(injector.getInstance(instanceType));
         assertSame(injector.getInstance(instanceType), injector.getInstance(instanceType));
     }

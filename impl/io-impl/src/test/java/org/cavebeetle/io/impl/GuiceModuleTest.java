@@ -27,7 +27,7 @@ public final class GuiceModuleTest
     @Before
     public void setUp()
     {
-        final GuiceModule guiceModule = new GuiceModule();
+        final IoGuiceModule guiceModule = new IoGuiceModule();
         injector = createInjector(guiceModule);
     }
 
@@ -37,7 +37,7 @@ public final class GuiceModuleTest
     @Test
     public final void check_that_no_Guice_bindings_were_missed()
     {
-        assertEquals(6, injector.getBindings().size() - 3);
+        assertEquals(8, injector.getBindings().size() - 3);
     }
 
     /**

@@ -32,4 +32,14 @@ public interface CryptographicHash
      */
     Digest generateDigest(
             InputStream inputStream);
+
+    /**
+     * Generates a digest for the given lines. Each line gets an OS dependent end-of-line appended prior to processing.
+     *
+     * @param lines
+     *            the lines to hash.
+     * @return a digest for the given lines.
+     */
+    Digest generateDigest(
+            Iterable<String> lines);
 }

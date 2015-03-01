@@ -1,7 +1,6 @@
 package org.cavebeetle.maven;
 
 import java.io.File;
-import org.cavebeetle.io.InputStream;
 
 /**
  * A {@code FileHashGenerator} facilitates generating digests.
@@ -19,12 +18,12 @@ public interface FileHashGenerator
             File file);
 
     /**
-     * Generates a {@code Digest} for (the contents of) the given {@code InputStream}.
+     * Generates a {@code Digest} for the given lines.
      *
-     * @param inputStream
-     *            the {@code InputStream} to hash.
-     * @return a {@code Digest} for (the contents of) the given {@code InputStream}.
+     * @param lines
+     *            the lines to hash.
+     * @return a {@code Digest} for the given lines.
      */
     Digest generate(
-            InputStream inputStream);
+            Iterable<String> lines);
 }

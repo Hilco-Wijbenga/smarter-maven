@@ -3,6 +3,7 @@ package org.cavebeetle.io.impl;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Character.charCount;
 import static java.lang.Character.toChars;
+import static org.cavebeetle.io.InternalApi.END_OF_LINE;
 import java.io.File;
 import java.io.IOException;
 import javax.inject.Singleton;
@@ -54,6 +55,18 @@ public final class DefaultFileWriter
         }
     }
 
+    /**
+     * Creates a new {@code DefaultFileWriter} using the given delegate. Used for testing.
+     *
+     * @param delegate
+     *            the {@code java.io.FileWriter} instance.
+     */
+    public DefaultFileWriter(
+            final java.io.FileWriter delegate)
+    {
+        this.delegate = delegate;
+    }
+
     @Override
     public void close()
     {
@@ -103,5 +116,12 @@ public final class DefaultFileWriter
         {
             throw new IoException(e);
         }
+    }
+
+    @Override
+    public void writeLine(
+            final String text)
+    {
+        write(text + END_OF_LINE);
     }
 }

@@ -14,7 +14,8 @@ public interface InternalApi
             GroupId.Builder,
             ArtifactId.Builder,
             DirtyReason.Builder,
-            Version.Builder
+            Version.Builder,
+            SourceFilesDigest.Builder
 {
     /**
      * Gets the singleton {@code ActiveDetector} instance.

@@ -17,9 +17,9 @@ public interface SourceFilesHashGenerator
      *
      * @param project
      *            the {@code Project} of interest.
-     * @return a {@code Digest} for the source files of the given {@code Project}.
+     * @return the source files digest.
      */
-    Digest generate(
+    SourceFilesDigest generate(
             Project project);
 
     /**
@@ -29,8 +29,9 @@ public interface SourceFilesHashGenerator
      *            the {@code Project} of interest.
      * @param targetDir
      *            the "target" directory where the source file listing should be stored.
+     * @return the source files digest.
      */
-    void generate(
+    SourceFilesDigest generate(
             Project project,
             File targetDir);
 }

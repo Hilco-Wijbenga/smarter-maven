@@ -1,5 +1,7 @@
 package org.cavebeetle.maven.impl;
 
+import java.io.File;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
@@ -27,6 +29,7 @@ import org.cavebeetle.maven.MavenExecutionListener;
 import org.cavebeetle.maven.MavenExtension;
 import org.cavebeetle.maven.Project;
 import org.cavebeetle.maven.SnapshotDetector;
+import org.cavebeetle.maven.SourceFilesDigest;
 import org.cavebeetle.maven.SourceFilesHashGenerator;
 import org.cavebeetle.maven.Version;
 import org.codehaus.plexus.logging.Logger;
@@ -201,5 +204,21 @@ public final class DefaultInternalApi
             final String version)
     {
         return injector.getInstance(Version.Builder.class).newVersion(version);
+    }
+
+    @Override
+    public SourceFilesDigest newSourceFilesDigest(
+            final List<String> sourceFileLines)
+    {
+        final SourceFilesDigest.Builder builder = injector.getInstance(SourceFilesDigest.Builder.class);
+        return builder.newSourceFilesDigest(sourceFileLines);
+    }
+
+    @Override
+    public SourceFilesDigest newSourceFilesDigest(
+            final File file)
+    {
+        final SourceFilesDigest.Builder builder = injector.getInstance(SourceFilesDigest.Builder.class);
+        return builder.newSourceFilesDigest(file);
     }
 }

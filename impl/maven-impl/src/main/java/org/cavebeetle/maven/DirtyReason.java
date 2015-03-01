@@ -39,51 +39,6 @@ public interface DirtyReason
             return "Published";
         }
     };
-    /** No build directory. */
-    DirtyReason NO_BUILD_DIRECTORY = new DirtyReason()
-    {
-        @Override
-        public boolean isDirty()
-        {
-            return true;
-        }
-
-        @Override
-        public String getReason()
-        {
-            return "No build directory";
-        }
-    };
-    /** Not in the local repo. */
-    DirtyReason NOT_IN_LOCAL_REPO = new DirtyReason()
-    {
-        @Override
-        public boolean isDirty()
-        {
-            return true;
-        }
-
-        @Override
-        public String getReason()
-        {
-            return "Not in the local repo";
-        }
-    };
-    /** No hash file. */
-    DirtyReason NO_HASH_FILE = new DirtyReason()
-    {
-        @Override
-        public boolean isDirty()
-        {
-            return true;
-        }
-
-        @Override
-        public String getReason()
-        {
-            return "No source file digest available";
-        }
-    };
     /** Changes detected. */
     DirtyReason CHANGES_DETECTED = new DirtyReason()
     {
