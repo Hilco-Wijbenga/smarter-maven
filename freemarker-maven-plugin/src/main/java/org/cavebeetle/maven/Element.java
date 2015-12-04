@@ -26,7 +26,6 @@ public interface Element
         {
             checkNotNull(key, "Missing 'key'.");
             this.key = key;
-            System.out.println("TAG: " + this);
         }
 
         @Override
@@ -95,7 +94,6 @@ public interface Element
             checkNotNull(elements, "Missing 'elements'.");
             this.key = key;
             this.elements = ImmutableList.copyOf(elements);
-            System.out.println("GROUP: " + this);
         }
 
         @Override
@@ -175,7 +173,6 @@ public interface Element
             checkArgument(value != null && !value.isEmpty(), "Missing 'value'.");
             this.key = key;
             this.value = value;
-            System.out.println("KEY_VALUE: " + this);
         }
 
         @Override
