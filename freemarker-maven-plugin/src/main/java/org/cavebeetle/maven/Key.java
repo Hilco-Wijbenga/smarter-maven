@@ -2,15 +2,24 @@ package org.cavebeetle.maven;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Interners.newWeakInterner;
+import com.google.common.collect.Interner;
 
 public final class Key
 {
-    private final String value;
+    private static final Interner<Key> INTERNER = newWeakInterner();
 
-    public Key(final String value)
+    public static final Key newKey(final String key)
     {
-        checkArgument(value != null && !value.isEmpty(), "Missing 'value'.");
-        this.value = value;
+        return INTERNER.intern(new Key(key));
+    }
+
+    private final String key;
+
+    private Key(final String key)
+    {
+        checkArgument(key != null && !key.isEmpty(), "Missing 'key'.");
+        this.key = key;
     }
 
     @Override
@@ -18,7 +27,7 @@ public final class Key
     {
         final int prime = 271;
         int result = 1;
-        result = prime * result + value.hashCode();
+        result = prime * result + key.hashCode();
         return result;
     }
 
@@ -34,17 +43,19 @@ public final class Key
             return false;
         }
         final Key other = (Key) object;
-        return value.equals(other.value);
+        return key.equals(other.key);
     }
 
     @Override
     public String toString()
     {
-        return toStringHelper(getClass()).addValue(value).toString();
+        return toStringHelper(getClass())
+                .addValue(key)
+                .toString();
     }
 
-    public String value()
+    public String key()
     {
-        return value;
+        return key;
     }
 }

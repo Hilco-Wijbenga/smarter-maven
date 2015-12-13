@@ -2,36 +2,25 @@ package org.cavebeetle.maven;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkNotNull;
-import java.util.Iterator;
-import java.util.List;
-import com.google.common.collect.ImmutableList;
 
 public final class Path
-        implements
-            Iterable<Key>
 {
     public static final Path ROOT = new Path();
-    private final List<Key> keys;
+    private final Path parent;
+    private final Key key;
 
-    public Path(final Path path, final Key key)
+    private Path(final Path parent, final Key key)
     {
-        checkNotNull(path, "Missing 'path'.");
+        checkNotNull(parent, "Missing 'parent'.");
         checkNotNull(key, "Missing 'key'.");
-        keys = ImmutableList.<Key> builder()
-                .addAll(path.keys)
-                .add(key)
-                .build();
-    }
-
-    public Path(final Key key)
-    {
-        checkNotNull(key, "Missing 'key'.");
-        keys = ImmutableList.of(key);
+        this.parent = parent;
+        this.key = key;
     }
 
     private Path()
     {
-        keys = ImmutableList.<Key> builder().build();
+        parent = null;
+        key = null;
     }
 
     @Override
@@ -39,7 +28,8 @@ public final class Path
     {
         final int prime = 349;
         int result = 1;
-        result = prime * result + keys.hashCode();
+        result = prime * result + parent.hashCode();
+        result = prime * result + key.hashCode();
         return result;
     }
 
@@ -55,28 +45,38 @@ public final class Path
             return false;
         }
         final Path other = (Path) object;
-        return keys.equals(other.keys);
+        return parent.equals(other.parent) && key.equals(other.key);
     }
 
     @Override
     public String toString()
     {
-        return toStringHelper(getClass()).add("keys", keys).toString();
+        return toStringHelper(getClass())
+                .add("parent", parent)
+                .add("key", key)
+                .toString();
     }
 
-    @Override
-    public Iterator<Key> iterator()
+    public Path extend(final Key key)
     {
-        return keys.iterator();
+        return new Path(this, key);
     }
 
     public String toText()
     {
-        final StringBuilder sb = new StringBuilder();
-        for (final Key key : keys)
+        if (this == ROOT)
         {
-            sb.append('/').append(key.value());
+            return "/";
         }
-        return sb.toString();
+        else
+        {
+            final StringBuilder sb = new StringBuilder();
+            if (parent != ROOT)
+            {
+                sb.append(parent.toText());
+            }
+            sb.append('/').append(key.key());
+            return sb.toString();
+        }
     }
 }

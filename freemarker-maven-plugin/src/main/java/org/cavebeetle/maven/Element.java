@@ -76,7 +76,7 @@ public interface Element
         public void toText(final Path path, final List<String> lines)
         {
             System.out.println(type() + "#toText");
-            lines.add(path.toText() + "/" + key.value());
+            lines.add(path.toText() + "/" + key.key());
         }
     }
 
@@ -152,7 +152,7 @@ public interface Element
         public void toText(final Path path, final List<String> lines)
         {
             System.out.println(type() + "#toText");
-            final Path path_ = new Path(path, key);
+            final Path path_ = path.extend(key);
             for (final Element element : elements)
             {
                 element.toText(path_, lines);
@@ -225,7 +225,7 @@ public interface Element
         public void toText(final Path path, final List<String> lines)
         {
             System.out.println(type() + "#toText");
-            lines.add(path.toText() + "/" + key.value() + " = '" + value + "'");
+            lines.add(path.toText() + "/" + key.key() + " = '" + value + "'");
         }
 
         public String value()
