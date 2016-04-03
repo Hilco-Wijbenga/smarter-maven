@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.apache.maven.model.Dependency;
@@ -24,11 +23,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public final class Main
@@ -37,16 +34,14 @@ public final class Main
     {
         final File file = new File("/home/hilco/workspaces/smarter-maven/pom.xml");
         final PomFile_ rootPomFile = newPomFile(file);
-        final Map<Gav_, Project_> gavToProjectMap =
-            ImmutableMap.copyOf(
-                    findProjects(Maps.<Gav_, Project_> newConcurrentMap(), rootPomFile));
-        final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap = Maps.newConcurrentMap();
-        for (final Gav_ gav : gavToProjectMap.keySet())
+        final StrictMap<Gav_, Project_> gavToProjectMap = findProjects(StrictMap.Builder.<Gav_, Project_>newStrictMap(), rootPomFile);
+        final StrictMap.Mutable<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap = StrictMap.Builder.newStrictMap();
+        for (final Gav_ gav : gavToProjectMap)
         {
             final Project_ project = gavToProjectMap.get(gav);
             projectToUpstreamProjectsMap.put(project, Sets.<UpstreamProject_> newHashSet());
         }
-        for (final Gav_ gav : gavToProjectMap.keySet())
+        for (final Gav_ gav : gavToProjectMap)
         {
             final Project_ project = gavToProjectMap.get(gav);
             final MavenProject mavenProject = mapPomFileToMavenProject(project.pomFile());
@@ -59,10 +54,12 @@ public final class Main
         System.out.println();
         System.out.println("Upstream Projects");
         System.out.println("-----------------");
-        for (final Project_ project_ : projectToUpstreamProjectsMap.keySet())
+        for (final Project_ project_ : projectToUpstreamProjectsMap)
         {
             System.out.println(String.format("%s -->", projectToText(project_)));
-            final List<UpstreamProject_> upstreamProjects_ = Lists.newArrayList(projectToUpstreamProjectsMap.get(project_));
+            final Set<UpstreamProject_> set = projectToUpstreamProjectsMap.get(project_);
+            System.out.println("    " + set.size());
+            final List<UpstreamProject_> upstreamProjects_ = Lists.newArrayList(set);
             Collections.sort(upstreamProjects_);
             final List<UpstreamProject_> upstreamProjects = ImmutableList.copyOf(upstreamProjects_);
             for (final UpstreamProject_ upstreamProject : upstreamProjects)
@@ -70,22 +67,14 @@ public final class Main
                 System.out.println(String.format("    %s (%s)", projectToText(upstreamProject.value()), upstreamProject.upstreamReason()));
             }
         }
-        for (final Project_ project_ : projectToUpstreamProjectsMap.keySet())
-        {
-            System.out.println(String.format("%s -->", projectToText(project_)));
-            final Set<UpstreamProject_> allUpstreamProjects = findAllUpstreamProjects(Sets.<UpstreamProject_> newHashSet(), projectToUpstreamProjectsMap, project_);
-            for (final UpstreamProject_ upstreamProject : allUpstreamProjects)
-            {
-                System.out.println(String.format("    %s (%s)", projectToText(upstreamProject.value()), upstreamProject.upstreamReason()));
-            }
-        }
-        final Map<Project_, Set<Project_>> projectToDownstreamProjectsMap = Maps.newConcurrentMap();
-        for (final Gav_ gav : gavToProjectMap.keySet())
+        final StrictMap.Mutable<Project_, Set<Project_>> projectToDownstreamProjectsMap_ = StrictMap.Builder.newStrictMap();
+        for (final Gav_ gav : gavToProjectMap)
         {
             final Project_ project = gavToProjectMap.get(gav);
-            projectToDownstreamProjectsMap.put(project, Sets.<Project_> newHashSet());
+            projectToDownstreamProjectsMap_.put(project, Sets.<Project_> newHashSet());
         }
-        for (final Gav_ gav : gavToProjectMap.keySet())
+        final StrictMap<Project_, Set<Project_>> projectToDownstreamProjectsMap = projectToDownstreamProjectsMap_.freeze();
+        for (final Gav_ gav : gavToProjectMap)
         {
             final Project_ project = gavToProjectMap.get(gav);
             final Set<UpstreamProject_> upstreamProjects = projectToUpstreamProjectsMap.get(project);
@@ -97,7 +86,7 @@ public final class Main
         System.out.println();
         System.out.println("Downstream Projects");
         System.out.println("-------------------");
-        for (final Project_ project_ : projectToDownstreamProjectsMap.keySet())
+        for (final Project_ project_ : projectToDownstreamProjectsMap)
         {
             System.out.println(String.format("%s -->", projectToText(project_)));
             final List<Project_> downstreamProjects_ = Lists.newArrayList(projectToDownstreamProjectsMap.get(project_));
@@ -123,7 +112,7 @@ public final class Main
 
     public static final Set<UpstreamProject_> findAllUpstreamProjects(
             final Set<UpstreamProject_> allUpstreamProjects,
-            final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
             final Project_ project)
     {
         for (final UpstreamProject_ upstreamProject : projectToUpstreamProjectsMap.get(project))
@@ -137,7 +126,11 @@ public final class Main
         return allUpstreamProjects;
     }
 
-    public static void addParentToUpstreamProjects(final Map<Gav_, Project_> gavToProjectMap, final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap, final Project_ project, final MavenProject mavenProject)
+    public static void addParentToUpstreamProjects(
+            final StrictMap<Gav_, Project_> gavToProjectMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final Project_ project,
+            final MavenProject mavenProject)
     {
         final Optional<Parent> maybeParent = Optional.fromNullable(mavenProject.getModel().getParent());
         if (maybeParent.isPresent())
@@ -147,7 +140,11 @@ public final class Main
         }
     }
 
-    public static void addModulesToUpstreamProjects(final Map<Gav_, Project_> gavToProjectMap, final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap, final Project_ project, final MavenProject mavenProject)
+    public static void addModulesToUpstreamProjects(
+            final StrictMap<Gav_, Project_> gavToProjectMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final Project_ project,
+            final MavenProject mavenProject)
     {
         for (final String module : mavenProject.getModules())
         {
@@ -157,7 +154,11 @@ public final class Main
         }
     }
 
-    public static void addDependenciesToUpstreamProjects(final Map<Gav_, Project_> gavToProjectMap, final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap, final Project_ project, final MavenProject mavenProject)
+    public static void addDependenciesToUpstreamProjects(
+            final StrictMap<Gav_, Project_> gavToProjectMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final Project_ project,
+            final MavenProject mavenProject)
     {
         for (final Dependency dependency : mavenProject.getDependencies())
         {
@@ -165,7 +166,11 @@ public final class Main
         }
     }
 
-    public static void addPluginsAndPluginDependenciesToUpstreamProjects(final Map<Gav_, Project_> gavToProjectMap, final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap, final Project_ project, final MavenProject mavenProject)
+    public static void addPluginsAndPluginDependenciesToUpstreamProjects(
+            final StrictMap<Gav_, Project_> gavToProjectMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final Project_ project,
+            final MavenProject mavenProject)
     {
         for (final Plugin plugin : mavenProject.getBuild().getPlugins())
         {
@@ -177,7 +182,11 @@ public final class Main
         }
     }
 
-    public static void addExtensionsToUpstreamProjects(final Map<Gav_, Project_> gavToProjectMap, final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap, final Project_ project, final MavenProject mavenProject)
+    public static void addExtensionsToUpstreamProjects(
+            final StrictMap<Gav_, Project_> gavToProjectMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final Project_ project,
+            final MavenProject mavenProject)
     {
         for (final Extension extension : mavenProject.getBuild().getExtensions())
         {
@@ -185,11 +194,12 @@ public final class Main
         }
     }
 
+    @SuppressWarnings("boxing")
     public static final <SOURCE> void addToUpstreamProjects(
             final GavMapper<SOURCE> gavMapper,
             final SOURCE source,
-            final Map<Gav_, Project_> gavToProjectMap,
-            final Map<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
+            final StrictMap<Gav_, Project_> gavToProjectMap,
+            final StrictMap<Project_, Set<UpstreamProject_>> projectToUpstreamProjectsMap,
             final Project_ project,
             final UpstreamReason upstreamReason)
     {
@@ -201,10 +211,11 @@ public final class Main
             projectToUpstreamProjectsMap.get(project).add(upstreamProject);
             System.out.println(
                     String.format(
-                            "##### %s - Add UpstreamProject %s:%s",
+                            "##### %s - Add UpstreamProject %s:%s [%d]",
                             projectToText(project),
-                            upstreamProject.value(),
-                            upstreamProject.upstreamReason()));
+                            projectToText(upstreamProject.value()),
+                            upstreamProject.upstreamReason(),
+                            projectToUpstreamProjectsMap.get(project).size()));
         }
     }
 
@@ -232,8 +243,8 @@ public final class Main
         });
     }
 
-    public static final Map<Gav_, Project_> findProjects(
-            final Map<Gav_, Project_> gavToProjectMap,
+    public static final StrictMap<Gav_, Project_> findProjects(
+            final StrictMap.Mutable<Gav_, Project_> gavToProjectMap,
             final PomFile_ pomFile)
     {
         final MavenProject mavenProject = mapPomFileToMavenProject(pomFile);
