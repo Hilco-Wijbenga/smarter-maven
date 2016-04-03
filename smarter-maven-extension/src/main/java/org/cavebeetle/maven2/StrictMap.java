@@ -1,4 +1,4 @@
-package org.cavebeetle.maven;
+package org.cavebeetle.maven2;
 
 import java.util.Iterator;
 import java.util.Map;

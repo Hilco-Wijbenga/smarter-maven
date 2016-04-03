@@ -1,4 +1,4 @@
-package org.cavebeetle.maven;
+package org.cavebeetle.maven2;
 
 public final class SmarterMavenException
         extends
