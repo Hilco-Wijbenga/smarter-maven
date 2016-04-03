@@ -1,6 +1,8 @@
 package org.cavebeetle.maven;
 
 import static org.cavebeetle.maven.Key.newKey;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Main
 {
@@ -18,16 +20,24 @@ public final class Main
         //        {
         //            System.out.println(line);
         //        }
-        System.out.println(Path.ROOT);
-        System.out.println(Path.ROOT.toText());
+        // model.getValue(path); model.setValue(path, value);
+        // model.getModel(path); model.addModel(path, key);
+        final Map<Object, Object> model = new HashMap<Object, Object>();
+        model.put("project", null);
+        /*
+
+         /project/modelVersion = 4.0.0
+         /project/dependencies/dependency[0]/groupId = xyz
+         /project/dependencies/dependency[0]/artifactId = xyz
+         /project/dependencies/dependency[1]/groupId = xyz
+         /project/dependencies/dependency[1]/artifactId = xyz
+
+         */
         final Path project = Path.ROOT.extend(newKey("project"));
-        System.out.println(project);
-        System.out.println(project.toText());
-        final Path parent = project.extend(newKey("parent"));
-        System.out.println(parent);
-        System.out.println(parent.toText());
-        final Path groupId = parent.extend(newKey("groupId"));
-        System.out.println(groupId);
-        System.out.println(groupId.toText());
+        final Path dependencies = project.extend(newKey("dependencies"));
+        final Path firstDependency = dependencies.extend(newKey("dependency"));
+        final Path firstDependencyGroupId = firstDependency.extend(newKey("groupId"));
+        final Path secondDependency = dependencies.extend(newKey("dependency"));
+        final Path secondDependencyGroupId = secondDependency.extend(newKey("groupId"));
     }
 }

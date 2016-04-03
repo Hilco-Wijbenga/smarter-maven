@@ -6,55 +6,31 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class Path
 {
     public static final Path ROOT = new Path();
-    private final Path parent;
-    private final Key key;
+    private final Key head;
+    private final Path tail;
 
     private Path(final Path parent, final Key key)
     {
         checkNotNull(parent, "Missing 'parent'.");
         checkNotNull(key, "Missing 'key'.");
-        this.parent = parent;
-        this.key = key;
+        head = parent.head();
+        tail = new Path(parent.tail(), key);
     }
 
     private Path()
     {
-        parent = null;
-        key = null;
+        head = null;
+        tail = null;
     }
 
-    @Override
-    public int hashCode()
+    public Key head()
     {
-        final int prime = 349;
-        int result = 1;
-        result = prime * result + parent.hashCode();
-        result = prime * result + key.hashCode();
-        return result;
+        return head;
     }
 
-    @Override
-    public boolean equals(final Object object)
+    public Path tail()
     {
-        if (this == object)
-        {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass())
-        {
-            return false;
-        }
-        final Path other = (Path) object;
-        return parent.equals(other.parent) && key.equals(other.key);
-    }
-
-    @Override
-    public String toString()
-    {
-        return toStringHelper(getClass())
-                .add("parent", parent)
-                .add("key", key)
-                .toString();
+        return tail;
     }
 
     public Path extend(final Key key)
@@ -71,12 +47,54 @@ public final class Path
         else
         {
             final StringBuilder sb = new StringBuilder();
-            if (parent != ROOT)
+            sb.append('/').append(head);
+            if (tail != ROOT)
             {
-                sb.append(parent.toText());
+                sb.append(tail.toText());
             }
-            sb.append('/').append(key.key());
             return sb.toString();
         }
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 349;
+        if (this == ROOT)
+        {
+            return prime;
+        }
+        int result = 1;
+        result = prime * result + head.hashCode();
+        result = prime * result + tail.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object object)
+    {
+        if (this == object)
+        {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass())
+        {
+            return false;
+        }
+        final Path other = (Path) object;
+        if (this == ROOT || other == ROOT)
+        {
+            return this == other;
+        }
+        return head.equals(other.head) && tail.equals(other.tail);
+    }
+
+    @Override
+    public String toString()
+    {
+        return toStringHelper(getClass())
+                .add("head", head)
+                .add("tail", tail)
+                .toString();
     }
 }
