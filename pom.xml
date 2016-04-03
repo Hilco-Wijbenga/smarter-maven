@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                         http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                        http://maven.apache.org/maven-v4_0_0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cavebeetle.maven</groupId>
     <artifactId>smarter-maven</artifactId>
-    <version>2</version>
+    <version>modules</version>
     <packaging>pom</packaging>
 
     <name>Smarter Maven</name>
-    <inceptionYear>2015</inceptionYear>
 
     <modules>
         <module>poms</module>
         <module>api</module>
         <module>impl</module>
         <module>smarter-maven-extension</module>
-    <module>freemarker-maven-plugin</module>
-  </modules>
-
-    <build>
-
-        <defaultGoal>clean install</defaultGoal>
-
-    </build>
+    </modules>
 
 </project>
