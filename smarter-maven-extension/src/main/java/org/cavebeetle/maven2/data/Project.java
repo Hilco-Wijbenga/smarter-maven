@@ -2,11 +2,20 @@ package org.cavebeetle.maven2.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 public final class Project
         implements
             Comparable<Project>
 {
+    private static final Interner<Project> INTERNER = Interners.newWeakInterner();
+
+    public static final Project make(final Gav gav, final Packaging type, final PomFile pomFile)
+    {
+        return INTERNER.intern(new Project(gav, type, pomFile));
+    }
+
     private final Gav gav;
     private final Packaging packaging;
     private final PomFile pomFile;

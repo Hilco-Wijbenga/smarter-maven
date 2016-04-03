@@ -2,14 +2,23 @@ package org.cavebeetle.maven2.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 public final class Version
         implements
             Comparable<Version>
 {
+    private static final Interner<Version> INTERNER = Interners.newWeakInterner();
+
+    public static final Version make(final String version)
+    {
+        return INTERNER.intern(new Version(version));
+    }
+
     private final String value;
 
-    public Version(final String value)
+    Version(final String value)
     {
         Preconditions.checkArgument(value != null && !value.isEmpty(), "Missing 'value'.");
         this.value = value;

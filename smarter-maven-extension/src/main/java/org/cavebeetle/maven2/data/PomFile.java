@@ -1,16 +1,26 @@
 package org.cavebeetle.maven2.data;
 
 import java.io.File;
+import org.cavebeetle.maven2.SmarterMavenRuntime;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 public final class PomFile
         implements
             Comparable<PomFile>
 {
+    private static final Interner<PomFile> INTERNER = Interners.newWeakInterner();
+
+    public static final PomFile make(final File value)
+    {
+        return INTERNER.intern(new PomFile(SmarterMavenRuntime.toCanonicalFile(value)));
+    }
+
     private final File value;
 
-    public PomFile(final File value)
+    PomFile(final File value)
     {
         Preconditions.checkArgument(value != null && value.isFile(), "Missing 'value'.");
         this.value = value;

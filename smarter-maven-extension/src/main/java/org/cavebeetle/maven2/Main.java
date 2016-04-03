@@ -1,7 +1,6 @@
 package org.cavebeetle.maven2;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -17,22 +16,16 @@ import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingResult;
 import org.apache.maven.project.MavenProject;
-import org.cavebeetle.maven2.data.ArtifactId;
 import org.cavebeetle.maven2.data.Gav;
-import org.cavebeetle.maven2.data.GroupId;
 import org.cavebeetle.maven2.data.Packaging;
 import org.cavebeetle.maven2.data.PomFile;
 import org.cavebeetle.maven2.data.Project;
 import org.cavebeetle.maven2.data.UpstreamProject;
 import org.cavebeetle.maven2.data.UpstreamReason;
-import org.cavebeetle.maven2.data.Version;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -41,7 +34,7 @@ public final class Main
     public static void main(final String[] args)
     {
         final File file = new File("/home/hilco/workspaces/smarter-maven/pom.xml");
-        final PomFile rootPomFile = newPomFile(file);
+        final PomFile rootPomFile = PomFile.make(file);
         final StrictMap<Gav, Project> gavToProjectMap = findProjects(StrictMap.Builder.<Gav, Project> newStrictMap(), rootPomFile);
         final StrictMap.Mutable<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap = StrictMap.Builder.newStrictMap();
         for (final Gav gav : gavToProjectMap)
@@ -116,22 +109,6 @@ public final class Main
                 gav.artifactId().value(),
                 project.packaging().value(),
                 gav.version().value());
-    }
-
-    public static final Set<UpstreamProject> findAllUpstreamProjects(
-            final Set<UpstreamProject> allUpstreamProjects,
-            final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
-            final Project project)
-    {
-        for (final UpstreamProject upstreamProject : projectToUpstreamProjectsMap.get(project))
-        {
-            if (!allUpstreamProjects.contains(upstreamProject))
-            {
-                allUpstreamProjects.add(upstreamProject);
-                findAllUpstreamProjects(allUpstreamProjects, projectToUpstreamProjectsMap, upstreamProject.value());
-            }
-        }
-        return allUpstreamProjects;
     }
 
     public static void addParentToUpstreamProjects(
@@ -215,7 +192,7 @@ public final class Main
         final Optional<Project> maybeProject = Optional.fromNullable(gavToProjectMap.get(gav));
         if (maybeProject.isPresent())
         {
-            final UpstreamProject upstreamProject = newUpstreamProject(maybeProject.get(), upstreamReason);
+            final UpstreamProject upstreamProject = UpstreamProject.make(maybeProject.get(), upstreamReason);
             projectToUpstreamProjectsMap.get(project).add(upstreamProject);
             System.out.println(
                     String.format(
@@ -257,8 +234,8 @@ public final class Main
     {
         final MavenProject mavenProject = mapPomFileToMavenProject(pomFile);
         final Gav gav = GavMapper.MAVEN_PROJECT_TO_GAV.map(mavenProject);
-        final Packaging type = newPackaging(mavenProject.getPackaging());
-        final Project project = newProject(gav, type, pomFile);
+        final Packaging type = Packaging.make(mavenProject.getPackaging());
+        final Project project = Project.make(gav, type, pomFile);
         System.out.println(String.format("Found %s (%s)", gav, pomFile));
         gavToProjectMap.put(gav, project);
         for (final String module : mavenProject.getModules())
@@ -273,150 +250,7 @@ public final class Main
     {
         final File moduleFile = SmarterMavenRuntime.toCanonicalFile(new File(pomFile.value().getParentFile(), module));
         return moduleFile.isFile()
-            ? newPomFile(moduleFile)
-            : newPomFile(SmarterMavenRuntime.toCanonicalFile(new File(moduleFile, "pom.xml")));
-    }
-
-    public static final PomFile newPomFile(final File pomFile)
-    {
-        Preconditions.checkNotNull(pomFile, "Missing 'pomFile'.");
-        try
-        {
-            return new PomFile(pomFile.getCanonicalFile());
-        }
-        catch (final IOException e)
-        {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static final Interner<GroupId> GROUP_ID_INTERNER = Interners.newWeakInterner();
-
-    public static final GroupId newGroupId(final String groupId)
-    {
-        return GROUP_ID_INTERNER.intern(new GroupId(groupId));
-    }
-
-    private static final Interner<ArtifactId> ARTIFACT_ID_INTERNER = Interners.newWeakInterner();
-
-    public static final ArtifactId newArtifactId(final String artifactId)
-    {
-        return ARTIFACT_ID_INTERNER.intern(new ArtifactId(artifactId));
-    }
-
-    private static final Interner<Version> VERSION_INTERNER = Interners.newWeakInterner();
-
-    public static final Version newVersion(final String version)
-    {
-        return VERSION_INTERNER.intern(new Version(version));
-    }
-
-    private static final Interner<Gav> GAV_INTERNER = Interners.newWeakInterner();
-
-    public static final Gav newGav(final GroupId groupId, final ArtifactId artifactId, final Version version)
-    {
-        return GAV_INTERNER.intern(new Gav(groupId, artifactId, version));
-    }
-
-    private static final Interner<Packaging> PACKAGING_INTERNER = Interners.newWeakInterner();
-
-    public static final Packaging newPackaging(final String packaging)
-    {
-        return PACKAGING_INTERNER.intern(new Packaging(packaging));
-    }
-
-    private static final Interner<Project> PROJECT_INTERNER = Interners.newWeakInterner();
-
-    public static final Project newProject(final Gav gav, final Packaging type, final PomFile pomFile)
-    {
-        return PROJECT_INTERNER.intern(new Project(gav, type, pomFile));
-    }
-
-    private static final Interner<UpstreamProject> UPSTREAM_PROJECT_INTERNER = Interners.newWeakInterner();
-
-    public static final UpstreamProject newUpstreamProject(final Project project, final UpstreamReason upstreamReason)
-    {
-        return UPSTREAM_PROJECT_INTERNER.intern(new UpstreamProject(project, upstreamReason));
-    }
-}
-
-interface GavMapper<SOURCE>
-{
-    Gav map(SOURCE source);
-
-    GavMapper<MavenProject> MAVEN_PROJECT_TO_GAV = new DefaultMavenProjectToGavMapper();
-    GavMapper<Parent> PARENT_TO_GAV = new DefaultParentToGavMapper();
-    GavMapper<Dependency> DEPENDENCY_TO_GAV = new DefaultDependencyToGavMapper();
-    GavMapper<Plugin> PLUGIN_TO_GAV = new DefaultPluginToGavMapper();
-    GavMapper<Extension> EXTENSION_TO_GAV = new DefaultExtensionToGavMapper();
-
-    public static final class DefaultMavenProjectToGavMapper
-            implements
-                GavMapper<MavenProject>
-    {
-        @Override
-        public Gav map(final MavenProject source)
-        {
-            return Main.newGav(
-                    Main.newGroupId(source.getGroupId()),
-                    Main.newArtifactId(source.getArtifactId()),
-                    Main.newVersion(source.getVersion()));
-        }
-    }
-
-    public static final class DefaultParentToGavMapper
-            implements
-                GavMapper<Parent>
-    {
-        @Override
-        public Gav map(final Parent source)
-        {
-            return Main.newGav(
-                    Main.newGroupId(source.getGroupId()),
-                    Main.newArtifactId(source.getArtifactId()),
-                    Main.newVersion(source.getVersion()));
-        }
-    }
-
-    public static final class DefaultDependencyToGavMapper
-            implements
-                GavMapper<Dependency>
-    {
-        @Override
-        public Gav map(final Dependency source)
-        {
-            return Main.newGav(
-                    Main.newGroupId(source.getGroupId()),
-                    Main.newArtifactId(source.getArtifactId()),
-                    Main.newVersion(source.getVersion()));
-        }
-    }
-
-    public static final class DefaultPluginToGavMapper
-            implements
-                GavMapper<Plugin>
-    {
-        @Override
-        public Gav map(final Plugin source)
-        {
-            return Main.newGav(
-                    Main.newGroupId(source.getGroupId()),
-                    Main.newArtifactId(source.getArtifactId()),
-                    Main.newVersion(source.getVersion()));
-        }
-    }
-
-    public static final class DefaultExtensionToGavMapper
-            implements
-                GavMapper<Extension>
-    {
-        @Override
-        public Gav map(final Extension source)
-        {
-            return Main.newGav(
-                    Main.newGroupId(source.getGroupId()),
-                    Main.newArtifactId(source.getArtifactId()),
-                    Main.newVersion(source.getVersion()));
-        }
+            ? PomFile.make(moduleFile)
+            : PomFile.make(SmarterMavenRuntime.toCanonicalFile(new File(moduleFile, "pom.xml")));
     }
 }

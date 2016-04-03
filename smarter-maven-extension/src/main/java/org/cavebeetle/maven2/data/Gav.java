@@ -2,16 +2,25 @@ package org.cavebeetle.maven2.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 public final class Gav
         implements
             Comparable<Gav>
 {
+    private static final Interner<Gav> INTERNER = Interners.newWeakInterner();
+
+    public static final Gav make(final GroupId groupId, final ArtifactId artifactId, final Version version)
+    {
+        return INTERNER.intern(new Gav(groupId, artifactId, version));
+    }
+
     private final GroupId groupId;
     private final ArtifactId artifactId;
     private final Version version;
 
-    public Gav(final GroupId groupId, final ArtifactId artifactId, final Version version)
+    Gav(final GroupId groupId, final ArtifactId artifactId, final Version version)
     {
         Preconditions.checkNotNull(groupId, "Missing 'groupId'.");
         Preconditions.checkNotNull(artifactId, "Missing 'artifactId'.");

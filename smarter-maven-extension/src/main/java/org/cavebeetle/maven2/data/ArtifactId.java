@@ -2,14 +2,23 @@ package org.cavebeetle.maven2.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 public final class ArtifactId
         implements
             Comparable<ArtifactId>
 {
+    private static final Interner<ArtifactId> INTERNER = Interners.newWeakInterner();
+
+    public static final ArtifactId make(final String artifactId)
+    {
+        return INTERNER.intern(new ArtifactId(artifactId));
+    }
+
     private final String value;
 
-    public ArtifactId(final String value)
+    ArtifactId(final String value)
     {
         Preconditions.checkArgument(value != null && !value.isEmpty(), "Missing 'value'.");
         this.value = value;
