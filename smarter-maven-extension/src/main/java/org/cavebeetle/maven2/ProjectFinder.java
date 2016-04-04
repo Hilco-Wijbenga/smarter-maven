@@ -1,22 +1,28 @@
 package org.cavebeetle.maven2;
 
 import java.io.File;
+import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.cavebeetle.maven2.data.Gav;
 import org.cavebeetle.maven2.data.Packaging;
 import org.cavebeetle.maven2.data.PomFile;
 import org.cavebeetle.maven2.data.Project;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 public final class ProjectFinder
 {
     private final MavenProjectCache mavenProjectCache;
+    private final StrictMap.Mutable<Gav, Project> gavToProjectMap;
 
     public ProjectFinder()
     {
         mavenProjectCache = new MavenProjectCache();
+        gavToProjectMap = StrictMap.Builder.newStrictMap();
     }
 
-    public StrictMap<Gav, Project> find(final StrictMap.Mutable<Gav, Project> gavToProjectMap, final PomFile pomFile)
+    public List<Project> find(final PomFile pomFile)
     {
         final MavenProject mavenProject = mavenProjectCache.get(pomFile);
         final Gav gav = GavMapper.MAVEN_PROJECT_TO_GAV.map(mavenProject);
@@ -27,9 +33,19 @@ public final class ProjectFinder
         for (final String module : mavenProject.getModules())
         {
             final PomFile modulePomFile = getPomFile(pomFile, module);
-            find(gavToProjectMap, modulePomFile);
+            find(modulePomFile);
         }
-        return gavToProjectMap;
+        final List<Project> projects = Lists.newArrayList();
+        for (final Gav gav_ : gavToProjectMap)
+        {
+            projects.add(gavToProjectMap.get(gav_));
+        }
+        return ImmutableList.copyOf(projects);
+    }
+
+    public Optional<Project> getProject(final Gav gav)
+    {
+        return Optional.fromNullable(gavToProjectMap.get(gav));
     }
 
     public PomFile getPomFile(final PomFile pomFile, final String module)

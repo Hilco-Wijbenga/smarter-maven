@@ -27,22 +27,20 @@ public final class Main
         final PomFile rootPomFile = PomFile.make(file);
         final ProjectFinder projectFinder = new ProjectFinder();
         final MavenProjectCache mavenProjectCache = new MavenProjectCache();
-        final StrictMap<Gav, Project> gavToProjectMap = projectFinder.find(StrictMap.Builder.<Gav, Project> newStrictMap(), rootPomFile);
+        final List<Project> projects = projectFinder.find(rootPomFile);
         final StrictMap.Mutable<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap = StrictMap.Builder.newStrictMap();
-        for (final Gav gav : gavToProjectMap)
+        for (final Project project : projects)
         {
-            final Project project = gavToProjectMap.get(gav);
             projectToUpstreamProjectsMap.put(project, Sets.<UpstreamProject> newHashSet());
         }
-        for (final Gav gav : gavToProjectMap)
+        for (final Project project : projects)
         {
-            final Project project = gavToProjectMap.get(gav);
             final MavenProject mavenProject = mavenProjectCache.get(project.pomFile());
-            addParentToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
-            addModulesToUpstreamProjects(projectFinder, mavenProjectCache, gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
-            addDependenciesToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
-            addPluginsAndPluginDependenciesToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
-            addExtensionsToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
+            addParentToUpstreamProjects(projectFinder, projectToUpstreamProjectsMap, project, mavenProject);
+            addModulesToUpstreamProjects(projectFinder, mavenProjectCache, projectToUpstreamProjectsMap, project, mavenProject);
+            addDependenciesToUpstreamProjects(projectFinder, projectToUpstreamProjectsMap, project, mavenProject);
+            addPluginsAndPluginDependenciesToUpstreamProjects(projectFinder, projectToUpstreamProjectsMap, project, mavenProject);
+            addExtensionsToUpstreamProjects(projectFinder, projectToUpstreamProjectsMap, project, mavenProject);
         }
         System.out.println();
         System.out.println("Upstream Projects");
@@ -61,15 +59,13 @@ public final class Main
             }
         }
         final StrictMap.Mutable<Project, Set<Project>> projectToDownstreamProjectsMap_ = StrictMap.Builder.newStrictMap();
-        for (final Gav gav : gavToProjectMap)
+        for (final Project project : projects)
         {
-            final Project project = gavToProjectMap.get(gav);
             projectToDownstreamProjectsMap_.put(project, Sets.<Project> newHashSet());
         }
         final StrictMap<Project, Set<Project>> projectToDownstreamProjectsMap = projectToDownstreamProjectsMap_.freeze();
-        for (final Gav gav : gavToProjectMap)
+        for (final Project project : projects)
         {
-            final Project project = gavToProjectMap.get(gav);
             final Set<UpstreamProject> upstreamProjects = projectToUpstreamProjectsMap.get(project);
             for (final UpstreamProject upstreamProject : upstreamProjects)
             {
@@ -104,7 +100,7 @@ public final class Main
     }
 
     public static void addParentToUpstreamProjects(
-            final StrictMap<Gav, Project> gavToProjectMap,
+            final ProjectFinder projectFinder,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
             final MavenProject mavenProject)
@@ -113,14 +109,13 @@ public final class Main
         if (maybeParent.isPresent())
         {
             final Parent parent = maybeParent.get();
-            addToUpstreamProjects(GavMapper.PARENT_TO_GAV, parent, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.PARENT);
+            addToUpstreamProjects(projectFinder, GavMapper.PARENT_TO_GAV, parent, projectToUpstreamProjectsMap, project, UpstreamReason.PARENT);
         }
     }
 
     public static void addModulesToUpstreamProjects(
             final ProjectFinder projectFinder,
             final MavenProjectCache mavenProjectCache,
-            final StrictMap<Gav, Project> gavToProjectMap,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
             final MavenProject mavenProject)
@@ -129,61 +124,61 @@ public final class Main
         {
             final PomFile modulePomFile = projectFinder.getPomFile(project.pomFile(), module);
             final MavenProject moduleMavenProject = mavenProjectCache.get(modulePomFile);
-            addToUpstreamProjects(GavMapper.MAVEN_PROJECT_TO_GAV, moduleMavenProject, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.MODULE);
+            addToUpstreamProjects(projectFinder, GavMapper.MAVEN_PROJECT_TO_GAV, moduleMavenProject, projectToUpstreamProjectsMap, project, UpstreamReason.MODULE);
         }
     }
 
     public static void addDependenciesToUpstreamProjects(
-            final StrictMap<Gav, Project> gavToProjectMap,
+            final ProjectFinder projectFinder,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
             final MavenProject mavenProject)
     {
         for (final Dependency dependency : mavenProject.getDependencies())
         {
-            addToUpstreamProjects(GavMapper.DEPENDENCY_TO_GAV, dependency, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.DEPENDENCY);
+            addToUpstreamProjects(projectFinder, GavMapper.DEPENDENCY_TO_GAV, dependency, projectToUpstreamProjectsMap, project, UpstreamReason.DEPENDENCY);
         }
     }
 
     public static void addPluginsAndPluginDependenciesToUpstreamProjects(
-            final StrictMap<Gav, Project> gavToProjectMap,
+            final ProjectFinder projectFinder,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
             final MavenProject mavenProject)
     {
         for (final Plugin plugin : mavenProject.getBuild().getPlugins())
         {
-            addToUpstreamProjects(GavMapper.PLUGIN_TO_GAV, plugin, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.PLUGIN);
+            addToUpstreamProjects(projectFinder, GavMapper.PLUGIN_TO_GAV, plugin, projectToUpstreamProjectsMap, project, UpstreamReason.PLUGIN);
             for (final Dependency pluginDependency : plugin.getDependencies())
             {
-                addToUpstreamProjects(GavMapper.DEPENDENCY_TO_GAV, pluginDependency, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.PLUGIN_DEPENDENCY);
+                addToUpstreamProjects(projectFinder, GavMapper.DEPENDENCY_TO_GAV, pluginDependency, projectToUpstreamProjectsMap, project, UpstreamReason.PLUGIN_DEPENDENCY);
             }
         }
     }
 
     public static void addExtensionsToUpstreamProjects(
-            final StrictMap<Gav, Project> gavToProjectMap,
+            final ProjectFinder projectFinder,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
             final MavenProject mavenProject)
     {
         for (final Extension extension : mavenProject.getBuild().getExtensions())
         {
-            addToUpstreamProjects(GavMapper.EXTENSION_TO_GAV, extension, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.EXTENSION);
+            addToUpstreamProjects(projectFinder, GavMapper.EXTENSION_TO_GAV, extension, projectToUpstreamProjectsMap, project, UpstreamReason.EXTENSION);
         }
     }
 
     @SuppressWarnings("boxing")
     public static final <SOURCE> void addToUpstreamProjects(
+            final ProjectFinder projectFinder,
             final GavMapper<SOURCE> gavMapper,
             final SOURCE source,
-            final StrictMap<Gav, Project> gavToProjectMap,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
             final UpstreamReason upstreamReason)
     {
         final Gav gav = gavMapper.map(source);
-        final Optional<Project> maybeProject = Optional.fromNullable(gavToProjectMap.get(gav));
+        final Optional<Project> maybeProject = projectFinder.getProject(gav);
         if (maybeProject.isPresent())
         {
             final UpstreamProject upstreamProject = UpstreamProject.make(maybeProject.get(), upstreamReason);
