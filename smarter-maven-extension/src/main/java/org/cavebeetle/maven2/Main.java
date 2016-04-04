@@ -10,6 +10,7 @@ import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.cavebeetle.maven2.data.Gav;
+import org.cavebeetle.maven2.data.Module;
 import org.cavebeetle.maven2.data.PomFile;
 import org.cavebeetle.maven2.data.Project;
 import org.cavebeetle.maven2.data.UpstreamProject;
@@ -116,11 +117,17 @@ public final class Main
             final Project project,
             final MavenProject mavenProject)
     {
-        for (final String module : mavenProject.getModules())
+        for (final String moduleName : mavenProject.getModules())
         {
-            final PomFile modulePomFile = ProjectFinder.getPomFile(project.pomFile(), module);
-            final MavenProject moduleMavenProject = mavenProjectCache.get(modulePomFile);
-            addToUpstreamProjects(projectFinder, GavMapper.MAVEN_PROJECT_TO_GAV, moduleMavenProject, projectToUpstreamProjectsMap, project, UpstreamReason.MODULE);
+            final Module module = Module.make(project.pomFile(), moduleName);
+            final MavenProject moduleMavenProject = mavenProjectCache.get(module.value());
+            addToUpstreamProjects(
+                    projectFinder,
+                    GavMapper.MAVEN_PROJECT_TO_GAV,
+                    moduleMavenProject,
+                    projectToUpstreamProjectsMap,
+                    project,
+                    UpstreamReason.MODULE);
         }
     }
 
