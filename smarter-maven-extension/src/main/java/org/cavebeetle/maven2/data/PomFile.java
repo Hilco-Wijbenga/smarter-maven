@@ -1,7 +1,8 @@
 package org.cavebeetle.maven2.data;
 
 import java.io.File;
-import org.cavebeetle.maven2.SmarterMavenRuntime;
+import java.io.IOException;
+import org.cavebeetle.maven2.SmarterMavenException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Interner;
@@ -13,9 +14,21 @@ public final class PomFile
 {
     private static final Interner<PomFile> INTERNER = Interners.newWeakInterner();
 
+    public static final File toCanonicalFile(final File file)
+    {
+        try
+        {
+            return file.getCanonicalFile();
+        }
+        catch (final IOException e)
+        {
+            throw new SmarterMavenException("Unable to get a canonical file.", e);
+        }
+    }
+
     public static final PomFile make(final File value)
     {
-        return INTERNER.intern(new PomFile(SmarterMavenRuntime.toCanonicalFile(value)));
+        return INTERNER.intern(new PomFile(toCanonicalFile(value)));
     }
 
     private final File value;
