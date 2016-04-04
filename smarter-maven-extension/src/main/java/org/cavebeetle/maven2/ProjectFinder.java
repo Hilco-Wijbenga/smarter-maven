@@ -18,7 +18,7 @@ public final class ProjectFinder
 {
     public static final StrictMap<Gav, Project> initialize(final MavenProjectCache mavenProjectCache, final PomFile pomFile)
     {
-        final StrictMap.Mutable<Gav, Project> gavToProjectMap = StrictMap.Builder.newStrictMap();
+        final StrictMap.Mutable<Gav, Project> gavToProjectMap = StrictMap.Builder.make();
         findAll(mavenProjectCache, gavToProjectMap, pomFile);
         return gavToProjectMap;
     }

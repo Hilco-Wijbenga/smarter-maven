@@ -19,7 +19,7 @@ public final class GavToProjectMapper
     public GavToProjectMapper()
     {
         mavenProjectCache = new MavenProjectCache();
-        gavToProjectMap = StrictMap.Builder.newStrictMap();
+        gavToProjectMap = StrictMap.Builder.make();
     }
 
     public List<Project> findAll(final PomFile pomFile)

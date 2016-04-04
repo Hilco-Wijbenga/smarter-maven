@@ -27,7 +27,7 @@ public final class Main
         final PomFile rootPomFile = PomFile.make(file);
         final MavenProjectCache mavenProjectCache = new MavenProjectCache();
         final ProjectFinder projectFinder = new ProjectFinder(mavenProjectCache, rootPomFile);
-        final StrictMap.Mutable<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap = StrictMap.Builder.newStrictMap();
+        final StrictMap.Mutable<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap = StrictMap.Builder.make();
         for (final Project project : projectFinder)
         {
             projectToUpstreamProjectsMap.put(project, Sets.<UpstreamProject> newHashSet());
@@ -54,7 +54,7 @@ public final class Main
                 System.out.println(String.format("    %s (%s)", projectToText(upstreamProject.value()), upstreamProject.upstreamReason()));
             }
         }
-        final StrictMap.Mutable<Project, Set<Project>> projectToDownstreamProjectsMap_ = StrictMap.Builder.newStrictMap();
+        final StrictMap.Mutable<Project, Set<Project>> projectToDownstreamProjectsMap_ = StrictMap.Builder.make();
         for (final Project project : projectFinder)
         {
             projectToDownstreamProjectsMap_.put(project, Sets.<Project> newHashSet());

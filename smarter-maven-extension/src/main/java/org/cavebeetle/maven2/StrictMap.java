@@ -23,7 +23,7 @@ public interface StrictMap<KEY, VALUE>
 
     public static final class Builder
     {
-        public static final <K, V> StrictMap.Mutable<K, V> newStrictMap()
+        public static final <K, V> StrictMap.Mutable<K, V> make()
         {
             return new DefaultStrictMap<K, V>();
         }
