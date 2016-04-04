@@ -25,7 +25,9 @@ public final class Main
     {
         final File file = new File("/home/hilco/workspaces/smarter-maven/pom.xml");
         final PomFile rootPomFile = PomFile.make(file);
-        final StrictMap<Gav, Project> gavToProjectMap = ProjectFinder.findProjects(StrictMap.Builder.<Gav, Project> newStrictMap(), rootPomFile);
+        final ProjectFinder projectFinder = new ProjectFinder();
+        final MavenProjectCache mavenProjectCache = new MavenProjectCache();
+        final StrictMap<Gav, Project> gavToProjectMap = projectFinder.find(StrictMap.Builder.<Gav, Project> newStrictMap(), rootPomFile);
         final StrictMap.Mutable<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap = StrictMap.Builder.newStrictMap();
         for (final Gav gav : gavToProjectMap)
         {
@@ -35,9 +37,9 @@ public final class Main
         for (final Gav gav : gavToProjectMap)
         {
             final Project project = gavToProjectMap.get(gav);
-            final MavenProject mavenProject = ProjectFinder.mapPomFileToMavenProject(project.pomFile());
+            final MavenProject mavenProject = mavenProjectCache.get(project.pomFile());
             addParentToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
-            addModulesToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
+            addModulesToUpstreamProjects(projectFinder, mavenProjectCache, gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
             addDependenciesToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
             addPluginsAndPluginDependenciesToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
             addExtensionsToUpstreamProjects(gavToProjectMap, projectToUpstreamProjectsMap, project, mavenProject);
@@ -116,6 +118,8 @@ public final class Main
     }
 
     public static void addModulesToUpstreamProjects(
+            final ProjectFinder projectFinder,
+            final MavenProjectCache mavenProjectCache,
             final StrictMap<Gav, Project> gavToProjectMap,
             final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap,
             final Project project,
@@ -123,8 +127,8 @@ public final class Main
     {
         for (final String module : mavenProject.getModules())
         {
-            final PomFile modulePomFile = ProjectFinder.mapModuleToPomFile(project.pomFile(), module);
-            final MavenProject moduleMavenProject = ProjectFinder.mapPomFileToMavenProject(modulePomFile);
+            final PomFile modulePomFile = projectFinder.getPomFile(project.pomFile(), module);
+            final MavenProject moduleMavenProject = mavenProjectCache.get(modulePomFile);
             addToUpstreamProjects(GavMapper.MAVEN_PROJECT_TO_GAV, moduleMavenProject, gavToProjectMap, projectToUpstreamProjectsMap, project, UpstreamReason.MODULE);
         }
     }
