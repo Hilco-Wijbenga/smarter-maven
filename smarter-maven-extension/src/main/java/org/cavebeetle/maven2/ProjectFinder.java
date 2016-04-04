@@ -1,6 +1,7 @@
 package org.cavebeetle.maven2;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.cavebeetle.maven2.data.Gav;
@@ -12,17 +13,20 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public final class ProjectFinder
+        implements
+            Iterable<Project>
 {
-    private final MavenProjectCache mavenProjectCache;
-    private final StrictMap.Mutable<Gav, Project> gavToProjectMap;
-
-    public ProjectFinder()
+    public static final StrictMap<Gav, Project> initialize(final MavenProjectCache mavenProjectCache, final PomFile pomFile)
     {
-        mavenProjectCache = new MavenProjectCache();
-        gavToProjectMap = StrictMap.Builder.newStrictMap();
+        final StrictMap.Mutable<Gav, Project> gavToProjectMap = StrictMap.Builder.newStrictMap();
+        findAll(mavenProjectCache, gavToProjectMap, pomFile);
+        return gavToProjectMap;
     }
 
-    public List<Project> find(final PomFile pomFile)
+    public static final void findAll(
+            final MavenProjectCache mavenProjectCache,
+            final StrictMap.Mutable<Gav, Project> gavToProjectMap,
+            final PomFile pomFile)
     {
         final MavenProject mavenProject = mavenProjectCache.get(pomFile);
         final Gav gav = GavMapper.MAVEN_PROJECT_TO_GAV.map(mavenProject);
@@ -33,14 +37,32 @@ public final class ProjectFinder
         for (final String module : mavenProject.getModules())
         {
             final PomFile modulePomFile = getPomFile(pomFile, module);
-            find(modulePomFile);
+            findAll(mavenProjectCache, gavToProjectMap, modulePomFile);
         }
-        final List<Project> projects = Lists.newArrayList();
-        for (final Gav gav_ : gavToProjectMap)
+    }
+
+    public static PomFile getPomFile(final PomFile pomFile, final String module)
+    {
+        final File moduleFile = new File(pomFile.value().getParentFile(), module);
+        return moduleFile.isFile()
+            ? PomFile.make(moduleFile)
+            : PomFile.make(new File(moduleFile, "pom.xml"));
+    }
+
+    private final MavenProjectCache mavenProjectCache;
+    private final StrictMap<Gav, Project> gavToProjectMap;
+    private final List<Project> projects;
+
+    public ProjectFinder(final MavenProjectCache mavenProjectCache, final PomFile pomFile)
+    {
+        this.mavenProjectCache = mavenProjectCache;
+        gavToProjectMap = initialize(mavenProjectCache, pomFile);
+        final List<Project> projects_ = Lists.newArrayList();
+        for (final Gav gav : gavToProjectMap)
         {
-            projects.add(gavToProjectMap.get(gav_));
+            projects_.add(gavToProjectMap.get(gav));
         }
-        return ImmutableList.copyOf(projects);
+        projects = ImmutableList.copyOf(projects_);
     }
 
     public Optional<Project> getProject(final Gav gav)
@@ -48,11 +70,9 @@ public final class ProjectFinder
         return Optional.fromNullable(gavToProjectMap.get(gav));
     }
 
-    public PomFile getPomFile(final PomFile pomFile, final String module)
+    @Override
+    public Iterator<Project> iterator()
     {
-        final File moduleFile = new File(pomFile.value().getParentFile(), module);
-        return moduleFile.isFile()
-            ? PomFile.make(moduleFile)
-            : PomFile.make(new File(moduleFile, "pom.xml"));
+        return projects.iterator();
     }
 }
