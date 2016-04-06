@@ -27,17 +27,16 @@ public final class GavToProjectMapper
         while (!pomFileQueue.isEmpty())
         {
             final PomFile pomFile = pomFileQueue.poll();
-            if (pomFiles.contains(pomFile))
+            if (!pomFiles.contains(pomFile))
             {
-                continue;
-            }
-            pomFiles.add(pomFile);
-            final MavenProject mavenProject = mavenProjectCache.get(pomFile);
-            addProject(gavToProjectMap, pomFile, mavenProject);
-            for (final String moduleName : mavenProject.getModules())
-            {
-                final Module module = Module.make(pomFile, moduleName);
-                pomFileQueue.offer(module.value());
+                pomFiles.add(pomFile);
+                final MavenProject mavenProject = mavenProjectCache.get(pomFile);
+                addProject(gavToProjectMap, pomFile, mavenProject);
+                for (final String moduleName : mavenProject.getModules())
+                {
+                    final Module module = Module.make(pomFile, moduleName);
+                    pomFileQueue.offer(module.value());
+                }
             }
         }
         return gavToProjectMap;
@@ -49,7 +48,6 @@ public final class GavToProjectMapper
             final MavenProject mavenProject)
     {
         final Gav gav = GavMapper.MAVEN_PROJECT_TO_GAV.map(mavenProject);
-        System.out.println(String.format("Found %s (%s)", gav, pomFile));
         final Packaging type = Packaging.make(mavenProject.getPackaging());
         final Project project = Project.make(gav, type, pomFile);
         gavToProjectMap.put(gav, project);

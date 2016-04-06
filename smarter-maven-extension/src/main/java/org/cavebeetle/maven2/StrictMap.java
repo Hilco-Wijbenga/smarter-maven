@@ -17,8 +17,6 @@ public interface StrictMap<KEY, VALUE>
                 StrictMap<KEY, VALUE>
     {
         void put(KEY key, VALUE value);
-
-        StrictMap<KEY, VALUE> freeze();
     }
 
     public static final class Builder
@@ -56,12 +54,6 @@ public interface StrictMap<KEY, VALUE>
         public int size()
         {
             return map.size();
-        }
-
-        @Override
-        public StrictMap<KEY, VALUE> freeze()
-        {
-            return this;
         }
 
         @Override

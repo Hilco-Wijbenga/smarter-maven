@@ -5,21 +5,21 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 
-public final class UpstreamProject
+public final class DownstreamProject
         implements
-            Comparable<UpstreamProject>
+            Comparable<DownstreamProject>
 {
-    private static final Interner<UpstreamProject> INTERNER = Interners.newWeakInterner();
+    private static final Interner<DownstreamProject> INTERNER = Interners.newWeakInterner();
 
-    public static final UpstreamProject make(final Project project, final Reason reason)
+    public static final DownstreamProject make(final Project project, final Reason reason)
     {
-        return INTERNER.intern(new UpstreamProject(project, reason));
+        return INTERNER.intern(new DownstreamProject(project, reason));
     }
 
     private final Project value;
     private final Reason reason;
 
-    public UpstreamProject(final Project value, final Reason reason)
+    public DownstreamProject(final Project value, final Reason reason)
     {
         Preconditions.checkArgument(value != null, "Missing 'value'.");
         Preconditions.checkArgument(reason != null, "Missing 'reason'.");
@@ -40,11 +40,11 @@ public final class UpstreamProject
     @Override
     public String toString()
     {
-        return String.format("[UpstreamProject value='%s' reason=%s]", value, reason);
+        return String.format("[DownstreamProject value='%s' reason=%s]", value, reason);
     }
 
     @Override
-    public int compareTo(final UpstreamProject other)
+    public int compareTo(final DownstreamProject other)
     {
         return ComparisonChain
                 .start()
@@ -74,7 +74,7 @@ public final class UpstreamProject
         {
             return false;
         }
-        final UpstreamProject other = (UpstreamProject) object;
+        final DownstreamProject other = (DownstreamProject) object;
         return compareTo(other) == 0;
     }
 }

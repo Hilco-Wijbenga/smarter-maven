@@ -5,12 +5,12 @@ import static org.cavebeetle.maven2.GavMapper.EXTENSION_TO_GAV;
 import static org.cavebeetle.maven2.GavMapper.MAVEN_PROJECT_TO_GAV;
 import static org.cavebeetle.maven2.GavMapper.PARENT_TO_GAV;
 import static org.cavebeetle.maven2.GavMapper.PLUGIN_TO_GAV;
-import static org.cavebeetle.maven2.data.UpstreamReason.DEPENDENCY;
-import static org.cavebeetle.maven2.data.UpstreamReason.EXTENSION;
-import static org.cavebeetle.maven2.data.UpstreamReason.MODULE;
-import static org.cavebeetle.maven2.data.UpstreamReason.PARENT;
-import static org.cavebeetle.maven2.data.UpstreamReason.PLUGIN;
-import static org.cavebeetle.maven2.data.UpstreamReason.PLUGIN_DEPENDENCY;
+import static org.cavebeetle.maven2.data.Reason.DEPENDENCY;
+import static org.cavebeetle.maven2.data.Reason.EXTENSION;
+import static org.cavebeetle.maven2.data.Reason.MODULE;
+import static org.cavebeetle.maven2.data.Reason.PARENT;
+import static org.cavebeetle.maven2.data.Reason.PLUGIN;
+import static org.cavebeetle.maven2.data.Reason.PLUGIN_DEPENDENCY;
 import java.util.Set;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
@@ -21,12 +21,22 @@ import org.cavebeetle.maven2.data.Gav;
 import org.cavebeetle.maven2.data.Module;
 import org.cavebeetle.maven2.data.Project;
 import org.cavebeetle.maven2.data.UpstreamProject;
-import org.cavebeetle.maven2.data.UpstreamReason;
+import org.cavebeetle.maven2.data.Reason;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
 public final class UpstreamProjectFinder
 {
+    public static StrictMap<Project, Set<UpstreamProject>> makeMap(final ProjectFinder projectFinder_)
+    {
+        final StrictMap.Mutable<Project, Set<UpstreamProject>> map = StrictMap.Builder.make();
+        for (final Project project : projectFinder_)
+        {
+            map.put(project, Sets.<UpstreamProject> newHashSet());
+        }
+        return map;
+    }
+
     private final MavenProjectCache mavenProjectCache;
     private final ProjectFinder projectFinder;
     private final StrictMap<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap;
@@ -35,22 +45,7 @@ public final class UpstreamProjectFinder
     {
         this.mavenProjectCache = mavenProjectCache;
         this.projectFinder = projectFinder;
-        final StrictMap.Mutable<Project, Set<UpstreamProject>> projectToUpstreamProjectsMap_ = StrictMap.Builder.make();
-        for (final Project project : projectFinder)
-        {
-            projectToUpstreamProjectsMap_.put(project, Sets.<UpstreamProject> newHashSet());
-        }
-        projectToUpstreamProjectsMap = projectToUpstreamProjectsMap_;
-        initialize();
-    }
-
-    public Set<UpstreamProject> get(final Project project)
-    {
-        return projectToUpstreamProjectsMap.get(project);
-    }
-
-    public void initialize()
-    {
+        projectToUpstreamProjectsMap = makeMap(projectFinder);
         for (final Project project : projectFinder)
         {
             final MavenProject mavenProject = mavenProjectCache.get(project.pomFile());
@@ -61,6 +56,11 @@ public final class UpstreamProjectFinder
             addPluginsAndDependenciesToUpstreamProjects(upstreamProjects, mavenProject);
             addExtensionsToUpstreamProjects(upstreamProjects, mavenProject);
         }
+    }
+
+    public Set<UpstreamProject> get(final Project project)
+    {
+        return projectToUpstreamProjectsMap.get(project);
     }
 
     public void addParentToUpstreamProjects(
@@ -122,11 +122,11 @@ public final class UpstreamProjectFinder
         }
     }
 
-    public final <SOURCE> void addToUpstreamProjects(
+    public <SOURCE> void addToUpstreamProjects(
             final GavMapper<SOURCE> gavMapper,
             final SOURCE source,
             final Set<UpstreamProject> upstreamProjects,
-            final UpstreamReason upstreamReason)
+            final Reason upstreamReason)
     {
         final Gav gav = gavMapper.map(source);
         final Optional<Project> maybeProject = projectFinder.getProject(gav);

@@ -1,6 +1,6 @@
 package org.cavebeetle.maven2.data;
 
-public enum UpstreamReason
+public enum Reason
 {
     PARENT,
     MODULE,
