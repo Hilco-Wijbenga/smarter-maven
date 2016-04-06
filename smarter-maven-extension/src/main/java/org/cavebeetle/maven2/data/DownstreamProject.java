@@ -11,20 +11,17 @@ public final class DownstreamProject
 {
     private static final Interner<DownstreamProject> INTERNER = Interners.newWeakInterner();
 
-    public static final DownstreamProject make(final Project project, final Reason reason)
+    public static final DownstreamProject make(final Project project)
     {
-        return INTERNER.intern(new DownstreamProject(project, reason));
+        return INTERNER.intern(new DownstreamProject(project));
     }
 
     private final Project value;
-    private final Reason reason;
 
-    public DownstreamProject(final Project value, final Reason reason)
+    public DownstreamProject(final Project value)
     {
         Preconditions.checkArgument(value != null, "Missing 'value'.");
-        Preconditions.checkArgument(reason != null, "Missing 'reason'.");
         this.value = value;
-        this.reason = reason;
     }
 
     public Project value()
@@ -32,15 +29,10 @@ public final class DownstreamProject
         return value;
     }
 
-    public Reason reason()
-    {
-        return reason;
-    }
-
     @Override
     public String toString()
     {
-        return String.format("[DownstreamProject value='%s' reason=%s]", value, reason);
+        return String.format("[DownstreamProject value='%s']", value);
     }
 
     @Override
@@ -49,7 +41,6 @@ public final class DownstreamProject
         return ComparisonChain
                 .start()
                 .compare(value, other.value())
-                .compare(reason, other.reason())
                 .result();
     }
 
@@ -59,7 +50,6 @@ public final class DownstreamProject
         final int prime = 31;
         int result = 1;
         result = prime * result + value.hashCode();
-        result = prime * result + reason.hashCode();
         return result;
     }
 

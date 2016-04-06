@@ -28,7 +28,7 @@ public final class DownstreamProjectFinder
             final Set<UpstreamProject> upstreamProjects = upstreamProjectFinder.get(project);
             for (final UpstreamProject upstreamProject : upstreamProjects)
             {
-                final DownstreamProject downstreamProject = DownstreamProject.make(project, upstreamProject.reason());
+                final DownstreamProject downstreamProject = DownstreamProject.make(project);
                 projectToDownstreamProjectsMap.get(upstreamProject.value()).add(downstreamProject);
             }
         }

@@ -28,9 +28,14 @@ public final class Main
             final List<DownstreamProject> downstreamProjects = ImmutableList.copyOf(downstreamProjects_);
             for (final DownstreamProject downstreamProject : downstreamProjects)
             {
-                System.out.println(String.format("    %s (%s)", projectToText(downstreamProject.value()), downstreamProject.reason()));
+                System.out.println(String.format("    %s", projectToText(downstreamProject)));
             }
         }
+    }
+
+    public static final String projectToText(final DownstreamProject downstreamProject)
+    {
+        return projectToText(downstreamProject.value());
     }
 
     public static final String projectToText(final Project project)
