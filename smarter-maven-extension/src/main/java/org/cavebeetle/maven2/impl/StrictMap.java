@@ -2,6 +2,7 @@ package org.cavebeetle.maven2.impl;
 
 import java.util.Iterator;
 import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 public interface StrictMap<KEY, VALUE>
@@ -17,6 +18,8 @@ public interface StrictMap<KEY, VALUE>
                 StrictMap<KEY, VALUE>
     {
         void put(KEY key, VALUE value);
+
+        StrictMap<KEY, VALUE> freeze();
     }
 
     public static final class Builder
@@ -36,6 +39,11 @@ public interface StrictMap<KEY, VALUE>
         public DefaultStrictMap()
         {
             map = Maps.newConcurrentMap();
+        }
+
+        public DefaultStrictMap(final Map<KEY, VALUE> map)
+        {
+            this.map = map;
         }
 
         @Override
@@ -60,6 +68,12 @@ public interface StrictMap<KEY, VALUE>
         public Iterator<KEY> iterator()
         {
             return map.keySet().iterator();
+        }
+
+        @Override
+        public StrictMap<KEY, VALUE> freeze()
+        {
+            return new DefaultStrictMap<KEY, VALUE>(ImmutableMap.copyOf(map));
         }
     }
 }

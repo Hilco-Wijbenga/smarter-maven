@@ -22,7 +22,7 @@ public final class DefaultDownstreamProjectFinder
         {
             map.put(project, Sets.<DownstreamProject> newHashSet());
         }
-        return map;
+        return map.freeze();
     }
 
     private final StrictMap<Project, Set<DownstreamProject>> projectToDownstreamProjectsMap;

@@ -42,7 +42,7 @@ public final class DefaultUpstreamProjectFinder
         {
             map.put(project, Sets.<UpstreamProject> newHashSet());
         }
-        return map;
+        return map.freeze();
     }
 
     private final MavenProjectCache mavenProjectCache;

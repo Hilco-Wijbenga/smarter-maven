@@ -12,8 +12,6 @@ import org.cavebeetle.maven2.data.Module;
 import org.cavebeetle.maven2.data.Packaging;
 import org.cavebeetle.maven2.data.PomFile;
 import org.cavebeetle.maven2.data.Project;
-import org.cavebeetle.maven2.impl.StrictMap.Builder;
-import org.cavebeetle.maven2.impl.StrictMap.Mutable;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -46,7 +44,7 @@ public final class DefaultGavToProjectMapper
                 }
             }
         }
-        return gavToProjectMap;
+        return gavToProjectMap.freeze();
     }
 
     public static void addProject(
