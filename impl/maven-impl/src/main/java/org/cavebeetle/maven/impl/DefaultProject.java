@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
@@ -212,6 +213,7 @@ public final class DefaultProject
             dependencies_.add(parentProject);
         }
         dependencies_.addAll(findDirectDependencies());
+        dependencies_.addAll(findPluginDependencies());
         dependencies = dependencies_;
         modules = findModules();
     }
@@ -242,6 +244,26 @@ public final class DefaultProject
             {
                 final Project projectDependency = gavToProjectMap.getProject(dependencyGav);
                 dependencies_.add(projectDependency);
+            }
+        }
+        return dependencies_;
+    }
+
+    private List<Project> findPluginDependencies()
+    {
+        final List<Project> dependencies_ = newArrayList();
+        final List<Plugin> plugins = mavenProject.getBuildPlugins();
+        for (final Plugin plugin : plugins)
+        {
+            final List<Dependency> pluginDependencies = plugin.getDependencies();
+            for (final Dependency dependency : pluginDependencies)
+            {
+                final Gav dependencyGav = gavGenerator.getGav(dependency);
+                if (gavToProjectMap.containsProjectForGav(dependencyGav))
+                {
+                    final Project projectDependency = gavToProjectMap.getProject(dependencyGav);
+                    dependencies_.add(projectDependency);
+                }
             }
         }
         return dependencies_;
