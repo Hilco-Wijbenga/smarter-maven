@@ -8,22 +8,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cavebeetle.maven</groupId>
-    <artifactId>impl-aggregator-pom</artifactId>
-    <version>1</version>
+    <artifactId>impl</artifactId>
+    <version>modules</version>
     <packaging>pom</packaging>
 
-    <name>Aggregator POM "impl"</name>
+    <name>Modules "impl"</name>
     <inceptionYear>2015</inceptionYear>
 
     <modules>
         <module>io-impl</module>
         <module>maven-impl</module>
     </modules>
-
-    <build>
-
-        <defaultGoal>clean install</defaultGoal>
-
-    </build>
 
 </project>

@@ -8,11 +8,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cavebeetle.maven</groupId>
-    <artifactId>poms-aggregator-pom</artifactId>
-    <version>1</version>
+    <artifactId>poms</artifactId>
+    <version>modules</version>
     <packaging>pom</packaging>
 
-    <name>Aggregator POM "poms"</name>
+    <name>Modules "poms"</name>
     <inceptionYear>2015</inceptionYear>
 
     <modules>
@@ -20,11 +20,5 @@
         <module>parent-pom</module>
         <module>parent-java-pom</module>
     </modules>
-
-    <build>
-
-        <defaultGoal>clean install</defaultGoal>
-
-    </build>
 
 </project>

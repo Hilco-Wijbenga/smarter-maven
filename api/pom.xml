@@ -8,22 +8,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cavebeetle.maven</groupId>
-    <artifactId>api-aggregator-pom</artifactId>
-    <version>1</version>
+    <artifactId>api</artifactId>
+    <version>modules</version>
     <packaging>pom</packaging>
 
-    <name>Aggregator POM "api"</name>
+    <name>Modules "api"</name>
     <inceptionYear>2015</inceptionYear>
 
     <modules>
         <module>io-api</module>
         <module>maven-api</module>
     </modules>
-
-    <build>
-
-        <defaultGoal>clean install</defaultGoal>
-
-    </build>
 
 </project>

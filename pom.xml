@@ -9,7 +9,7 @@
 
     <groupId>org.cavebeetle.maven</groupId>
     <artifactId>smarter-maven</artifactId>
-    <version>2</version>
+    <version>modules</version>
     <packaging>pom</packaging>
 
     <name>Smarter Maven</name>
@@ -21,11 +21,5 @@
         <module>impl</module>
         <module>smarter-maven-extension</module>
     </modules>
-
-    <build>
-
-        <defaultGoal>clean install</defaultGoal>
-
-    </build>
 
 </project>
