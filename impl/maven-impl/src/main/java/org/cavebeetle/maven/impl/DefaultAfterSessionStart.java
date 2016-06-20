@@ -32,8 +32,8 @@ public final class DefaultAfterSessionStart
         final String[] extra = new String[] {
             "",
             " Maven " + mavenVersionAsText,
-            "     with",
             " Smarter Maven " + smartMavenVersion,
+            " JDK " + System.getProperty("java.version"),
         };
         for (int i = 0; i < Banner.BANNER.length; i++)
         {

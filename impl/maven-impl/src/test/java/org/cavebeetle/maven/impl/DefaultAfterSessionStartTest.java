@@ -120,8 +120,8 @@ public final class DefaultAfterSessionStartTest
         when(mockRuntimeInformation.getMavenVersion()).thenReturn(mavenVersionAsText);
         afterSessionStart.afterSessionStart(mockSmarterMavenVersion, mockLogger, mockRuntimeInformation, mockMavenSession);
         verify(mockLogger).info(endsWith(" Maven " + mavenVersionAsText));
-        verify(mockLogger).info(endsWith("    with"));
         verify(mockLogger).info(endsWith(" Smarter Maven " + smarterMavenVersionAsText));
+        verify(mockLogger).info(endsWith(" JDK " + System.getProperty("java.version")));
     }
 
     private String createRandomVersion(
