@@ -14,8 +14,7 @@ public final class DefaultActiveDetector
             ActiveDetector
 {
     @Override
-    public boolean isActive(
-            final MavenSession session)
+    public boolean isActive(final MavenSession session)
     {
         checkNotNull(session, "Missing 'session'.");
         for (final String goal : session.getGoals())

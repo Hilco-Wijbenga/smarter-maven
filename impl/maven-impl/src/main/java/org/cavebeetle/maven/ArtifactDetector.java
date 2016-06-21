@@ -18,9 +18,7 @@ public interface ArtifactDetector
      *            the project to search for.
      * @return {@code true} if and only if the given project is available in the local repository.
      */
-    boolean hasArtifactInLocalRepository(
-            MavenSession session,
-            MavenProject project);
+    boolean hasArtifactInLocalRepository(MavenSession session, MavenProject project);
 
     /**
      * Returns the location of the local Maven repo. Normally, this is {@code ~/.m2/repository}.
@@ -29,8 +27,7 @@ public interface ArtifactDetector
      *            the {@code MavenSession} instance.
      * @return the location of the local Maven repo.
      */
-    File getLocalRepositoryDirectory(
-            MavenSession mavenSession);
+    File getLocalRepositoryDirectory(MavenSession mavenSession);
 
     /**
      * Returns whether the given project is available in a remote repository.
@@ -39,6 +36,5 @@ public interface ArtifactDetector
      *            the project to search for.
      * @return {@code true} if and only if the given project is available in a remote repository.
      */
-    boolean hasArtifactInRemoteRepository(
-            MavenProject project);
+    boolean hasArtifactInRemoteRepository(MavenProject project);
 }

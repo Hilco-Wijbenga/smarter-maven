@@ -44,24 +44,20 @@ public final class DefaultSourceFilesDigest
          *            the {@code FileHashGenerator} instance.
          */
         @Inject
-        public DefaultBuilder(
-                final IoApi ioApi,
-                final FileHashGenerator fileHashGenerator)
+        public DefaultBuilder(final IoApi ioApi, final FileHashGenerator fileHashGenerator)
         {
             this.ioApi = ioApi;
             this.fileHashGenerator = fileHashGenerator;
         }
 
         @Override
-        public SourceFilesDigest newSourceFilesDigest(
-                final List<String> sourceFileLines)
+        public SourceFilesDigest newSourceFilesDigest(final List<String> sourceFileLines)
         {
             return new DefaultSourceFilesDigest(fileHashGenerator, sourceFileLines);
         }
 
         @Override
-        public SourceFilesDigest newSourceFilesDigest(
-                final File file)
+        public SourceFilesDigest newSourceFilesDigest(final File file)
         {
             return new DefaultSourceFilesDigest(ioApi, fileHashGenerator, file);
         }
@@ -78,9 +74,7 @@ public final class DefaultSourceFilesDigest
      * @param sourceFileLines
      *            the list of source files.
      */
-    public DefaultSourceFilesDigest(
-            final FileHashGenerator fileHashGenerator,
-            final List<String> sourceFileLines)
+    public DefaultSourceFilesDigest(final FileHashGenerator fileHashGenerator, final List<String> sourceFileLines)
     {
         checkNotNull(fileHashGenerator, "Missing 'fileHashGenerator'.");
         checkNotNull(sourceFileLines, "Missing 'sourceFileLines'.");
@@ -99,10 +93,7 @@ public final class DefaultSourceFilesDigest
      * @param file
      *            the file with the list of source files and dependencies.
      */
-    public DefaultSourceFilesDigest(
-            final IoApi ioApi,
-            final FileHashGenerator fileHashGenerator,
-            final File file)
+    public DefaultSourceFilesDigest(final IoApi ioApi, final FileHashGenerator fileHashGenerator, final File file)
     {
         checkNotNull(ioApi, "Missing 'ioApi'.");
         checkNotNull(fileHashGenerator, "Missing 'fileHashGenerator'.");
@@ -125,8 +116,7 @@ public final class DefaultSourceFilesDigest
     }
 
     @Override
-    public void write(
-            final Writer writer)
+    public void write(final Writer writer)
     {
         for (final String digestLine : this)
         {
@@ -153,8 +143,7 @@ public final class DefaultSourceFilesDigest
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {
@@ -165,7 +154,6 @@ public final class DefaultSourceFilesDigest
             return false;
         }
         final DefaultSourceFilesDigest other = (DefaultSourceFilesDigest) object;
-        return digest.equals(other.digest)
-            && sourceFileLines.equals(other.sourceFileLines);
+        return digest.equals(other.digest) && sourceFileLines.equals(other.sourceFileLines);
     }
 }

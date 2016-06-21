@@ -124,8 +124,7 @@ public final class DefaultAfterSessionStartTest
         verify(mockLogger).info(endsWith(" JDK " + System.getProperty("java.version")));
     }
 
-    private String createRandomVersion(
-            final Random rnd)
+    private String createRandomVersion(final Random rnd)
     {
         final int major = 1 + rnd.nextInt(9);
         final int minor = rnd.nextInt(10);

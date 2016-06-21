@@ -38,8 +38,7 @@ public final class DefaultAfterProjectsReadInternal
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultAfterProjectsReadInternal(
-            final InternalApi internalApi)
+    public DefaultAfterProjectsReadInternal(final InternalApi internalApi)
     {
         checkNotNull(internalApi, "Missing 'internalApi'.");
         this.internalApi = internalApi;
@@ -60,12 +59,12 @@ public final class DefaultAfterProjectsReadInternal
         {
             final Gav projectGav = gavGenerator.getGav(mavenProject);
             final Project project =
-                internalApi.newProject(
-                        logger,
-                        mavenSession,
-                        projectBuilder,
-                        mavenProject,
-                        gavToProjectMap);
+                    internalApi.newProject(
+                            logger,
+                            mavenSession,
+                            projectBuilder,
+                            mavenProject,
+                            gavToProjectMap);
             gavToProjectMap.putProject(projectGav, project);
         }
         return gavToProjectMap;
@@ -113,8 +112,7 @@ public final class DefaultAfterProjectsReadInternal
         return dirtyProjects;
     }
 
-    private String getDirtyReasonMask(
-            final GavToProjectMap gavToProjectMap)
+    private String getDirtyReasonMask(final GavToProjectMap gavToProjectMap)
     {
         int maxGavLength = 0;
         for (final Gav gav : gavToProjectMap)

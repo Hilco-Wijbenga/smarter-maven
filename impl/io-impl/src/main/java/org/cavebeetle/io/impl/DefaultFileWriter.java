@@ -3,7 +3,7 @@ package org.cavebeetle.io.impl;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Character.charCount;
 import static java.lang.Character.toChars;
-import static org.cavebeetle.io.InternalApi.END_OF_LINE;
+import static org.cavebeetle.io.IoApi.END_OF_LINE;
 import java.io.File;
 import java.io.IOException;
 import javax.inject.Singleton;
@@ -26,8 +26,7 @@ public final class DefaultFileWriter
                 Builder
     {
         @Override
-        public FileWriter newWriter(
-                final File file)
+        public FileWriter newWriter(final File file)
         {
             return new DefaultFileWriter(file);
         }
@@ -41,8 +40,7 @@ public final class DefaultFileWriter
      * @param file
      *            the file to write to.
      */
-    public DefaultFileWriter(
-            final File file)
+    public DefaultFileWriter(final File file)
     {
         checkNotNull(file, "Missing 'file'.");
         try
@@ -61,8 +59,7 @@ public final class DefaultFileWriter
      * @param delegate
      *            the {@code java.io.FileWriter} instance.
      */
-    public DefaultFileWriter(
-            final java.io.FileWriter delegate)
+    public DefaultFileWriter(final java.io.FileWriter delegate)
     {
         this.delegate = delegate;
     }
@@ -81,8 +78,7 @@ public final class DefaultFileWriter
     }
 
     @Override
-    public void write(
-            final int codePoint)
+    public void write(final int codePoint)
     {
         try
         {
@@ -104,8 +100,7 @@ public final class DefaultFileWriter
     }
 
     @Override
-    public void write(
-            final String text)
+    public void write(final String text)
     {
         checkNotNull(text, "Missing 'text'.");
         try
@@ -119,8 +114,7 @@ public final class DefaultFileWriter
     }
 
     @Override
-    public void writeLine(
-            final String text)
+    public void writeLine(final String text)
     {
         write(text + END_OF_LINE);
     }

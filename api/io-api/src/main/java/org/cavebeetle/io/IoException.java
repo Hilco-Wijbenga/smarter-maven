@@ -15,8 +15,7 @@ public class IoException
      * @param message
      *            the message explaining the reason for this exception.
      */
-    public IoException(
-            final String message)
+    public IoException(final String message)
     {
         super(message);
     }
@@ -27,8 +26,7 @@ public class IoException
      * @param cause
      *            the underlying cause of this exception.
      */
-    public IoException(
-            final Throwable cause)
+    public IoException(final Throwable cause)
     {
         super(cause);
     }
@@ -41,9 +39,7 @@ public class IoException
      * @param cause
      *            the underlying cause of this exception.
      */
-    public IoException(
-            final String message,
-            final Throwable cause)
+    public IoException(final String message, final Throwable cause)
     {
         super(message, cause);
     }

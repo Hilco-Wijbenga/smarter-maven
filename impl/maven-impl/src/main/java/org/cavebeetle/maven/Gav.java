@@ -21,10 +21,7 @@ public interface Gav
          *            the version.
          * @return a new {@code Gav}.
          */
-        Gav newGav(
-                GroupId groupId,
-                ArtifactId artifactId,
-                Version version);
+        Gav newGav(GroupId groupId, ArtifactId artifactId, Version version);
     }
 
     /**

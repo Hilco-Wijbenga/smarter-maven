@@ -18,9 +18,7 @@ public final class DefaultArtifactDetector
             ArtifactDetector
 {
     @Override
-    public boolean hasArtifactInLocalRepository(
-            final MavenSession mavenSession,
-            final MavenProject mavenProject)
+    public boolean hasArtifactInLocalRepository(final MavenSession mavenSession, final MavenProject mavenProject)
     {
         checkNotNull(mavenSession, "Missing 'mavenSession'.");
         checkNotNull(mavenProject, "Missing 'mavenProject'.");
@@ -32,8 +30,7 @@ public final class DefaultArtifactDetector
     }
 
     @Override
-    public File getLocalRepositoryDirectory(
-            final MavenSession mavenSession)
+    public File getLocalRepositoryDirectory(final MavenSession mavenSession)
     {
         final ArtifactRepository artifactRepository = mavenSession.getLocalRepository();
         final File localRepositoryDir = new File(artifactRepository.getBasedir());
@@ -41,8 +38,7 @@ public final class DefaultArtifactDetector
     }
 
     @Override
-    public boolean hasArtifactInRemoteRepository(
-            final MavenProject mavenProject)
+    public boolean hasArtifactInRemoteRepository(final MavenProject mavenProject)
     {
         checkNotNull(mavenProject, "Missing 'mavenProject'.");
         final Artifact artifact = mavenProject.getArtifact();

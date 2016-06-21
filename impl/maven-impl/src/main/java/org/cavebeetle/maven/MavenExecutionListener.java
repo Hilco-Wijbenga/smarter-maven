@@ -21,8 +21,5 @@ public interface MavenExecutionListener
      * @param gavToProjectMap
      *            the {@code GavToProjectMap} instance.
      */
-    void init(
-            Logger logger,
-            MavenSession session,
-            GavToProjectMap gavToProjectMap);
+    void init(Logger logger, MavenSession session, GavToProjectMap gavToProjectMap);
 }

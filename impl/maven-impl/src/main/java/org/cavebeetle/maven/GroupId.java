@@ -17,7 +17,6 @@ public interface GroupId
          *            the text representing the group id.
          * @return a new {@code GroupId}.
          */
-        GroupId newGroupId(
-                String groupId);
+        GroupId newGroupId(String groupId);
     }
 }

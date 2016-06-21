@@ -21,8 +21,7 @@ public interface SourceFiles
          *            the root directory to search for source files.
          * @return a new {@code SourceFiles}.
          */
-        SourceFiles newSourceFiles(
-                File baseDir);
+        SourceFiles newSourceFiles(File baseDir);
 
         /**
          * Creates a new {@code SourceFiles} for a project without a directory.
@@ -31,7 +30,6 @@ public interface SourceFiles
          *            the POM file to list as a source file.
          * @return a new {@code SourceFiles}.
          */
-        SourceFiles newSourceFilesForProjectWithoutDirectory(
-                File pomFile);
+        SourceFiles newSourceFilesForProjectWithoutDirectory(File pomFile);
     }
 }

@@ -25,15 +25,13 @@ public final class DefaultTextFileReader
                 Builder
     {
         @Override
-        public TextFileReader newTextFileReader(
-                final File file)
+        public TextFileReader newTextFileReader(final File file)
         {
             return new DefaultTextFileReader(file);
         }
 
         @Override
-        public TextFileReader newTextFileReader(
-                final String text)
+        public TextFileReader newTextFileReader(final String text)
         {
             return new DefaultTextFileReader(text);
         }
@@ -47,8 +45,7 @@ public final class DefaultTextFileReader
      * @param file
      *            the file to read from.
      */
-    public DefaultTextFileReader(
-            final File file)
+    public DefaultTextFileReader(final File file)
     {
         try
         {
@@ -67,8 +64,7 @@ public final class DefaultTextFileReader
      * @param text
      *            the text to read from.
      */
-    public DefaultTextFileReader(
-            final String text)
+    public DefaultTextFileReader(final String text)
     {
         final java.io.StringReader stringReader = new java.io.StringReader(text);
         delegate = new java.io.LineNumberReader(stringReader);

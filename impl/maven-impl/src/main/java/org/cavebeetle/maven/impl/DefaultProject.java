@@ -50,8 +50,7 @@ public final class DefaultProject
          *            the {@code InternalApi} instance.
          */
         @Inject
-        public DefaultBuilder(
-                final InternalApi internalApi)
+        public DefaultBuilder(final InternalApi internalApi)
         {
             this.internalApi = internalApi;
         }
@@ -162,8 +161,7 @@ public final class DefaultProject
     }
 
     @Override
-    public DirtyReason findDirtyReason(
-            final boolean includeModules)
+    public DirtyReason findDirtyReason(final boolean includeModules)
     {
         if (dirtReason == null)
         {
@@ -203,8 +201,7 @@ public final class DefaultProject
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {

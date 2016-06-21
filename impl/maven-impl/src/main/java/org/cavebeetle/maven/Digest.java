@@ -17,8 +17,7 @@ public interface Digest
          *            the bytes that represent the digest.
          * @return a new {@code Digest}.
          */
-        Digest newDigest(
-                byte[] bytes);
+        Digest newDigest(byte[] bytes);
     }
 
     /**

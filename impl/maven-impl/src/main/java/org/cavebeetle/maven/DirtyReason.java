@@ -19,9 +19,7 @@ public interface DirtyReason
          *            the reason why this {@code DirtyReason} indicates the project is considered dirty.
          * @return a new {@code DirtyReason}.
          */
-        DirtyReason newDirtyReason(
-                boolean dirty,
-                String reason);
+        DirtyReason newDirtyReason(boolean dirty, String reason);
     }
 
     /** Published. */

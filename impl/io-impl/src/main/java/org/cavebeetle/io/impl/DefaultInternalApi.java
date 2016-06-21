@@ -30,37 +30,32 @@ public final class DefaultInternalApi
      *            the Guice {@code Injector} instance.
      */
     @Inject
-    public DefaultInternalApi(
-            final Injector injector)
+    public DefaultInternalApi(final Injector injector)
     {
         checkNotNull(injector, "Missing 'injector'.");
         this.injector = injector;
     }
 
     @Override
-    public InputStream newInputStream(
-            final File file)
+    public InputStream newInputStream(final File file)
     {
         return injector.getInstance(InputStream.Builder.class).newInputStream(file);
     }
 
     @Override
-    public InputStream newInputStream(
-            final String text)
+    public InputStream newInputStream(final String text)
     {
         return injector.getInstance(InputStream.Builder.class).newInputStream(text);
     }
 
     @Override
-    public SourceFiles newSourceFiles(
-            final File baseDir)
+    public SourceFiles newSourceFiles(final File baseDir)
     {
         return injector.getInstance(SourceFiles.Builder.class).newSourceFiles(baseDir);
     }
 
     @Override
-    public SourceFiles newSourceFilesForProjectWithoutDirectory(
-            final File pomFile)
+    public SourceFiles newSourceFilesForProjectWithoutDirectory(final File pomFile)
     {
         return injector.getInstance(SourceFiles.Builder.class).newSourceFilesForProjectWithoutDirectory(pomFile);
     }
@@ -72,29 +67,25 @@ public final class DefaultInternalApi
     }
 
     @Override
-    public FileWriter newWriter(
-            final File file)
+    public FileWriter newWriter(final File file)
     {
         return injector.getInstance(FileWriter.Builder.class).newWriter(file);
     }
 
     @Override
-    public TextFileReader newTextFileReader(
-            final File file)
+    public TextFileReader newTextFileReader(final File file)
     {
         return injector.getInstance(TextFileReader.Builder.class).newTextFileReader(file);
     }
 
     @Override
-    public TextFileReader newTextFileReader(
-            final String text)
+    public TextFileReader newTextFileReader(final String text)
     {
         return injector.getInstance(TextFileReader.Builder.class).newTextFileReader(text);
     }
 
     @Override
-    public TextFile newTextFile(
-            final File file)
+    public TextFile newTextFile(final File file)
     {
         return injector.getInstance(TextFile.Builder.class).newTextFile(file);
     }

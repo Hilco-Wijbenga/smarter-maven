@@ -21,8 +21,7 @@ public interface TextFileReader
          *            the {@code File} to read from.
          * @return a new {@code TextFileReader}.
          */
-        TextFileReader newTextFileReader(
-                File file);
+        TextFileReader newTextFileReader(File file);
 
         /**
          * Creates a new {@code TextFileReader}.
@@ -31,8 +30,7 @@ public interface TextFileReader
          *            the text to read from.
          * @return a new {@code TextFileReader}.
          */
-        TextFileReader newTextFileReader(
-                String text);
+        TextFileReader newTextFileReader(String text);
     }
 
     /**

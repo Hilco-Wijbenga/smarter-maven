@@ -23,8 +23,7 @@ public interface SourceFilesDigest
          *            the lines describing all the source files for the project.
          * @return a new {@code SourceFilesDigest}.
          */
-        SourceFilesDigest newSourceFilesDigest(
-                final List<String> sourceFileLines);
+        SourceFilesDigest newSourceFilesDigest(List<String> sourceFileLines);
 
         /**
          * Creates a new {@code SourceFilesDigest}.
@@ -33,8 +32,7 @@ public interface SourceFilesDigest
          *            the file with the source files for the project.
          * @return a new {@code SourceFilesDigest}.
          */
-        SourceFilesDigest newSourceFilesDigest(
-                final File file);
+        SourceFilesDigest newSourceFilesDigest(File file);
     }
 
     /**
@@ -50,6 +48,5 @@ public interface SourceFilesDigest
      * @param writer
      *            the {@code Writer} instance.
      */
-    void write(
-            Writer writer);
+    void write(Writer writer);
 }

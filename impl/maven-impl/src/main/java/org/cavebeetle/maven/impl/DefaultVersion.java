@@ -20,8 +20,7 @@ public final class DefaultVersion
                 Builder
     {
         @Override
-        public Version newVersion(
-                final String version)
+        public Version newVersion(final String version)
         {
             return new DefaultVersion(version);
         }
@@ -35,8 +34,7 @@ public final class DefaultVersion
      * @param version
      *            the text representing the version.
      */
-    public DefaultVersion(
-            final String version)
+    public DefaultVersion(final String version)
     {
         checkArgument(version != null && !version.isEmpty(), "Missing 'version'.");
         this.version = version;
@@ -51,8 +49,7 @@ public final class DefaultVersion
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {

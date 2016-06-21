@@ -19,8 +19,7 @@ public interface CryptographicHash
          *            the cryptographic hash algorithm to use.
          * @return a new {@code CryptographicHash}.
          */
-        CryptographicHash newCryptographicHash(
-                CryptographicHashAlgorithm cryptographicHashAlgorithm);
+        CryptographicHash newCryptographicHash(CryptographicHashAlgorithm cryptographicHashAlgorithm);
     }
 
     /**
@@ -30,8 +29,7 @@ public interface CryptographicHash
      *            the {@code InputStream} to hash.
      * @return a digest for the given {@code InputStream}.
      */
-    Digest generateDigest(
-            InputStream inputStream);
+    Digest generateDigest(InputStream inputStream);
 
     /**
      * Generates a digest for the given lines. Each line gets an OS dependent end-of-line appended prior to processing.
@@ -40,6 +38,5 @@ public interface CryptographicHash
      *            the lines to hash.
      * @return a digest for the given lines.
      */
-    Digest generateDigest(
-            Iterable<String> lines);
+    Digest generateDigest(Iterable<String> lines);
 }

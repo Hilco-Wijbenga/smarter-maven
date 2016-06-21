@@ -31,17 +31,14 @@ public final class DefaultFileHashGenerator
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultFileHashGenerator(
-            final IoApi ioApi,
-            final InternalApi internalApi)
+    public DefaultFileHashGenerator(final IoApi ioApi, final InternalApi internalApi)
     {
         this.ioApi = ioApi;
         this.internalApi = internalApi;
     }
 
     @Override
-    public Digest generate(
-            final File file)
+    public Digest generate(final File file)
     {
         if (file.exists())
         {
@@ -63,8 +60,7 @@ public final class DefaultFileHashGenerator
     }
 
     @Override
-    public Digest generate(
-            final Iterable<String> lines)
+    public Digest generate(final Iterable<String> lines)
     {
         final Digest digest = internalApi.newCryptographicHash(MD5).generateDigest(lines);
         return digest;

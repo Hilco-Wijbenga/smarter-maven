@@ -32,8 +32,7 @@ public final class DefaultMavenExtension
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultMavenExtension(
-            final InternalApi internalApi)
+    public DefaultMavenExtension(final InternalApi internalApi)
     {
         activeDetector = internalApi.getActiveDetector();
         afterSessionStart = internalApi.getAfterSessionStart();

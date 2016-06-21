@@ -9,23 +9,17 @@ import java.security.MessageDigest;
 public enum CryptographicHashAlgorithm
 {
     /** MD2 */
-    MD2(
-            "MD2"),
+    MD2("MD2"),
     /** MD5 */
-    MD5(
-            "MD5"),
+    MD5("MD5"),
     /** SHA1 */
-    SHA1(
-            "SHA-1"),
+    SHA1("SHA-1"),
     /** SHA-256 */
-    SHA256(
-            "SHA-256"),
+    SHA256("SHA-256"),
     /** SHA-384 */
-    SHA384(
-            "SHA-384"),
+    SHA384("SHA-384"),
     /** SHA-512 */
-    SHA512(
-            "SHA-512");
+    SHA512("SHA-512");
     /**
      * Creates a new {@code MessageDigest}.
      *
@@ -33,8 +27,7 @@ public enum CryptographicHashAlgorithm
      *            the algorithm to be used by the requested {@code MessageDigest}.
      * @return a new {@code MessageDigest}.
      */
-    public static final MessageDigest newMessageDigest(
-            final String algorithmName)
+    public static final MessageDigest newMessageDigest(final String algorithmName)
     {
         try
         {
@@ -48,8 +41,7 @@ public enum CryptographicHashAlgorithm
 
     private final String algorithmName;
 
-    private CryptographicHashAlgorithm(
-            final String algorithmName)
+    private CryptographicHashAlgorithm(final String algorithmName)
     {
         this.algorithmName = algorithmName;
     }

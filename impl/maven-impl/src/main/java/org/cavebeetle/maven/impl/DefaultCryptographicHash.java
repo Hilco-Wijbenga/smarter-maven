@@ -35,16 +35,14 @@ public final class DefaultCryptographicHash
          *            the {@code InternalApi} instance.
          */
         @Inject
-        public DefaultBuilder(
-                final InternalApi internalApi)
+        public DefaultBuilder(final InternalApi internalApi)
         {
             checkNotNull(internalApi, "Missing 'internalApi'.");
             this.internalApi = internalApi;
         }
 
         @Override
-        public CryptographicHash newCryptographicHash(
-                final CryptographicHashAlgorithm cryptographicHashAlgorithm)
+        public CryptographicHash newCryptographicHash(final CryptographicHashAlgorithm cryptographicHashAlgorithm)
         {
             return new DefaultCryptographicHash(internalApi, cryptographicHashAlgorithm);
         }
@@ -74,8 +72,7 @@ public final class DefaultCryptographicHash
     }
 
     @Override
-    public Digest generateDigest(
-            final InputStream inputStream)
+    public Digest generateDigest(final InputStream inputStream)
     {
         checkNotNull(inputStream, "Missing 'inputStream'.");
         final MessageDigest messageDigest = cryptographicHashAlgorithm.newMessageDigest();
@@ -93,8 +90,7 @@ public final class DefaultCryptographicHash
     }
 
     @Override
-    public Digest generateDigest(
-            final Iterable<String> lines)
+    public Digest generateDigest(final Iterable<String> lines)
     {
         checkNotNull(lines, "Missing 'lines'.");
         final MessageDigest messageDigest = cryptographicHashAlgorithm.newMessageDigest();

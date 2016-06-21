@@ -19,9 +19,7 @@ public final class DefaultDirtyReason
                 Builder
     {
         @Override
-        public DirtyReason newDirtyReason(
-                final boolean dirty,
-                final String reason)
+        public DirtyReason newDirtyReason(final boolean dirty, final String reason)
         {
             return new DefaultDirtyReason(dirty, reason);
         }
@@ -38,9 +36,7 @@ public final class DefaultDirtyReason
      * @param reason
      *            the reason why this {@code DirtyReason} indicates the project is considered dirty.
      */
-    public DefaultDirtyReason(
-            final boolean dirty,
-            final String reason)
+    public DefaultDirtyReason(final boolean dirty, final String reason)
     {
         this.dirty = dirty;
         this.reason = reason;

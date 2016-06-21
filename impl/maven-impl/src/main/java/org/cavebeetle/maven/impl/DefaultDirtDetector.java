@@ -44,9 +44,7 @@ public final class DefaultDirtDetector
      *            whether to include the project's modules when determining "dirtiness".
      * @return the first of the {@code Project}'s dirty dependencies or {@code Optional.absent()} if there are none.
      */
-    public static Optional<Project> hasDirtyDependency(
-            final Project project,
-            final boolean includeModules)
+    public static Optional<Project> hasDirtyDependency(final Project project, final boolean includeModules)
     {
         for (final Project dependency : project.getDependencies())
         {
@@ -83,8 +81,7 @@ public final class DefaultDirtDetector
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultDirtDetector(
-            final InternalApi internalApi)
+    public DefaultDirtDetector(final InternalApi internalApi)
     {
         this.internalApi = internalApi;
         artifactDetector = internalApi.getArtifactDetector();
@@ -162,8 +159,8 @@ public final class DefaultDirtDetector
         final File localMavenRepoDir = artifactDetector.getLocalRepositoryDirectory(session);
         final String userHomeDir = System.getProperty("user.home");
         final String localMavenRepo = localMavenRepoDir.getPath().startsWith(userHomeDir)
-            ? "~" + localMavenRepoDir.getPath().substring(userHomeDir.length())
-            : localMavenRepoDir.getPath();
+                ? "~" + localMavenRepoDir.getPath().substring(userHomeDir.length())
+                : localMavenRepoDir.getPath();
         return internalApi.newDirtyReason(true, "Not in local repo (" + localMavenRepo + ")");
     }
 

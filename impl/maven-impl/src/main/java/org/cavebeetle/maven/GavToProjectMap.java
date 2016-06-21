@@ -27,8 +27,7 @@ public interface GavToProjectMap
      *            the {@code Gav} to investigate.
      * @return {@code true} if and only if the given {@code Gav} is a key in this {@code GavToProjectMap}.
      */
-    boolean containsProjectForGav(
-            Gav gav);
+    boolean containsProjectForGav(Gav gav);
 
     /**
      * Gets the {@code Project} associated with the given {@code Gav}.
@@ -37,8 +36,7 @@ public interface GavToProjectMap
      *            the {@code Gav} to look for.
      * @return the {@code Project} associated with the given {@code Gav}.
      */
-    Project getProject(
-            Gav gav);
+    Project getProject(Gav gav);
 
     /**
      * Associates the given {@code Gav} with the given {@code Project}.
@@ -48,7 +46,5 @@ public interface GavToProjectMap
      * @param project
      *            the {@code Project} value.
      */
-    void putProject(
-            Gav gav,
-            Project project);
+    void putProject(Gav gav, Project project);
 }

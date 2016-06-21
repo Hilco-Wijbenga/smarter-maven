@@ -15,8 +15,7 @@ public final class FileNotFoundException
      * @param message
      *            the message explaining the reason for this exception.
      */
-    public FileNotFoundException(
-            final String message)
+    public FileNotFoundException(final String message)
     {
         super(message);
     }
@@ -27,8 +26,7 @@ public final class FileNotFoundException
      * @param cause
      *            the underlying cause of this exception.
      */
-    public FileNotFoundException(
-            final Throwable cause)
+    public FileNotFoundException(final Throwable cause)
     {
         super(cause);
     }
@@ -41,9 +39,7 @@ public final class FileNotFoundException
      * @param cause
      *            the underlying cause of this exception.
      */
-    public FileNotFoundException(
-            final String message,
-            final Throwable cause)
+    public FileNotFoundException(final String message, final Throwable cause)
     {
         super(message, cause);
     }

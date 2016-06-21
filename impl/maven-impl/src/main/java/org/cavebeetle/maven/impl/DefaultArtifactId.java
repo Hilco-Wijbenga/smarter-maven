@@ -20,8 +20,7 @@ public final class DefaultArtifactId
                 Builder
     {
         @Override
-        public ArtifactId newArtifactId(
-                final String artifactId)
+        public ArtifactId newArtifactId(final String artifactId)
         {
             return new DefaultArtifactId(artifactId);
         }
@@ -35,8 +34,7 @@ public final class DefaultArtifactId
      * @param artifactId
      *            the text representing the artifact id.
      */
-    public DefaultArtifactId(
-            final String artifactId)
+    public DefaultArtifactId(final String artifactId)
     {
         checkArgument(artifactId != null && !artifactId.isEmpty(), "Missing 'artifactId'.");
         this.artifactId = artifactId;
@@ -51,8 +49,7 @@ public final class DefaultArtifactId
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {

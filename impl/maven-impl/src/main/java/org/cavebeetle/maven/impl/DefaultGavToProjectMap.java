@@ -41,23 +41,19 @@ public final class DefaultGavToProjectMap
     }
 
     @Override
-    public Project getProject(
-            final Gav gav)
+    public Project getProject(final Gav gav)
     {
         return gavToProjectMap.get(gav);
     }
 
     @Override
-    public void putProject(
-            final Gav gav,
-            final Project project)
+    public void putProject(final Gav gav, final Project project)
     {
         gavToProjectMap.put(gav, project);
     }
 
     @Override
-    public boolean containsProjectForGav(
-            final Gav gav)
+    public boolean containsProjectForGav(final Gav gav)
     {
         return gavToProjectMap.containsKey(gav);
     }

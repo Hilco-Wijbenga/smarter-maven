@@ -15,6 +15,5 @@ public interface ActiveDetector
      *            the {@code MavenSession} instance.
      * @return {@code true} if and only if the Smart Maven extension is active.
      */
-    boolean isActive(
-            MavenSession session);
+    boolean isActive(MavenSession session);
 }

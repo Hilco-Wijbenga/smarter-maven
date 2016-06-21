@@ -35,15 +35,13 @@ public final class DefaultTextFile
          *            the {@code IoApi} instance.
          */
         @Inject
-        public DefaultBuilder(
-                final IoApi ioApi)
+        public DefaultBuilder(final IoApi ioApi)
         {
             this.ioApi = ioApi;
         }
 
         @Override
-        public TextFile newTextFile(
-                final File file)
+        public TextFile newTextFile(final File file)
         {
             return new DefaultTextFile(ioApi, file);
         }
@@ -59,9 +57,7 @@ public final class DefaultTextFile
      * @param textFile
      *            the text file represented by this {@code TextFile}.
      */
-    public DefaultTextFile(
-            final IoApi ioApi,
-            final File textFile)
+    public DefaultTextFile(final IoApi ioApi, final File textFile)
     {
         final TextFileReader textFileReader = ioApi.newTextFileReader(textFile);
         final List<String> lines_ = newArrayList();

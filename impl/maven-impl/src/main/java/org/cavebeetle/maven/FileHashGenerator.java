@@ -14,8 +14,7 @@ public interface FileHashGenerator
      *            the {@code File} to hash.
      * @return a {@code Digest} for (the contents of) the given {@code File}.
      */
-    Digest generate(
-            File file);
+    Digest generate(File file);
 
     /**
      * Generates a {@code Digest} for the given lines.
@@ -24,6 +23,5 @@ public interface FileHashGenerator
      *            the lines to hash.
      * @return a {@code Digest} for the given lines.
      */
-    Digest generate(
-            Iterable<String> lines);
+    Digest generate(Iterable<String> lines);
 }

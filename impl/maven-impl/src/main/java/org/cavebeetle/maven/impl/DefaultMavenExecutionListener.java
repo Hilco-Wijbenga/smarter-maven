@@ -43,8 +43,7 @@ public final class DefaultMavenExecutionListener
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultMavenExecutionListener(
-            final InternalApi internalApi)
+    public DefaultMavenExecutionListener(final InternalApi internalApi)
     {
         gavGenerator = internalApi.getGavGenerator();
         sourceFilesHashGenerator = internalApi.getSourceFilesHashGenerator();
@@ -52,52 +51,43 @@ public final class DefaultMavenExecutionListener
     }
 
     @Override
-    public void forkedProjectFailed(
-            final ExecutionEvent event)
+    public void forkedProjectFailed(final ExecutionEvent event)
     {
         delegate.forkedProjectFailed(event);
     }
 
     @Override
-    public void forkedProjectStarted(
-            final ExecutionEvent event)
+    public void forkedProjectStarted(final ExecutionEvent event)
     {
         delegate.forkedProjectStarted(event);
     }
 
     @Override
-    public void forkedProjectSucceeded(
-            final ExecutionEvent event)
+    public void forkedProjectSucceeded(final ExecutionEvent event)
     {
         delegate.forkedProjectSucceeded(event);
     }
 
     @Override
-    public void forkFailed(
-            final ExecutionEvent event)
+    public void forkFailed(final ExecutionEvent event)
     {
         delegate.forkFailed(event);
     }
 
     @Override
-    public void forkStarted(
-            final ExecutionEvent event)
+    public void forkStarted(final ExecutionEvent event)
     {
         delegate.forkStarted(event);
     }
 
     @Override
-    public void forkSucceeded(
-            final ExecutionEvent event)
+    public void forkSucceeded(final ExecutionEvent event)
     {
         delegate.forkSucceeded(event);
     }
 
     @Override
-    public void init(
-            final Logger logger_,
-            final MavenSession session,
-            final GavToProjectMap gavToProjectMap_)
+    public void init(final Logger logger_, final MavenSession session, final GavToProjectMap gavToProjectMap_)
     {
         logger = logger_;
         delegate = session.getRequest().getExecutionListener();
@@ -134,64 +124,55 @@ public final class DefaultMavenExecutionListener
     }
 
     @Override
-    public void mojoFailed(
-            final ExecutionEvent event)
+    public void mojoFailed(final ExecutionEvent event)
     {
         delegate.mojoFailed(event);
     }
 
     @Override
-    public void mojoSkipped(
-            final ExecutionEvent event)
+    public void mojoSkipped(final ExecutionEvent event)
     {
         delegate.mojoSkipped(event);
     }
 
     @Override
-    public void mojoStarted(
-            final ExecutionEvent event)
+    public void mojoStarted(final ExecutionEvent event)
     {
         delegate.mojoStarted(event);
     }
 
     @Override
-    public void mojoSucceeded(
-            final ExecutionEvent event)
+    public void mojoSucceeded(final ExecutionEvent event)
     {
         delegate.mojoSucceeded(event);
     }
 
     @Override
-    public void projectDiscoveryStarted(
-            final ExecutionEvent event)
+    public void projectDiscoveryStarted(final ExecutionEvent event)
     {
         delegate.projectDiscoveryStarted(event);
     }
 
     @Override
-    public void projectSkipped(
-            final ExecutionEvent event)
+    public void projectSkipped(final ExecutionEvent event)
     {
         delegate.projectSkipped(event);
     }
 
     @Override
-    public void projectStarted(
-            final ExecutionEvent event)
+    public void projectStarted(final ExecutionEvent event)
     {
         delegate.projectStarted(event);
     }
 
     @Override
-    public void projectFailed(
-            final ExecutionEvent event)
+    public void projectFailed(final ExecutionEvent event)
     {
         delegate.projectFailed(event);
     }
 
     @Override
-    public void projectSucceeded(
-            final ExecutionEvent event)
+    public void projectSucceeded(final ExecutionEvent event)
     {
         delegate.projectSucceeded(event);
         final MavenProject mavenProject = event.getSession().getCurrentProject();
@@ -211,15 +192,13 @@ public final class DefaultMavenExecutionListener
     }
 
     @Override
-    public void sessionStarted(
-            final ExecutionEvent event)
+    public void sessionStarted(final ExecutionEvent event)
     {
         delegate.sessionStarted(event);
     }
 
     @Override
-    public void sessionEnded(
-            final ExecutionEvent event)
+    public void sessionEnded(final ExecutionEvent event)
     {
         delegate.sessionEnded(event);
         final List<String> warnings = invalidProjectHierarchyDetector.getProjectHierarchyWarnings(gavToProjectMap);

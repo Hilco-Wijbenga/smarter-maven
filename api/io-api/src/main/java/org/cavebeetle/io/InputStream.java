@@ -19,8 +19,7 @@ public interface InputStream
          *            the {@code File} to read from.
          * @return a new {@code InputStream}.
          */
-        InputStream newInputStream(
-                File file);
+        InputStream newInputStream(File file);
 
         /**
          * Creates a new {@code InputStream}.
@@ -29,8 +28,7 @@ public interface InputStream
          *            the text to read from.
          * @return a new {@code InputStream}.
          */
-        InputStream newInputStream(
-                String text);
+        InputStream newInputStream(String text);
     }
 
     /**
@@ -45,6 +43,5 @@ public interface InputStream
      *            the buffer to fill.
      * @return the number of bytes read.
      */
-    int read(
-            byte[] buffer);
+    int read(byte[] buffer);
 }

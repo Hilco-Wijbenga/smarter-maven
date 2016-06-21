@@ -241,7 +241,8 @@ public final class DefaultFileWriterTest
     {
         final int codePoint = 0x10000;
         fileWriter.write(codePoint);
-        final char highSurrogate = (char) ((codePoint >>> 10) + MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT >>> 10));
+        final char highSurrogate =
+                (char) ((codePoint >>> 10) + MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT >>> 10));
         final char lowSurrogate = (char) ((codePoint & 0x3ff) + MIN_LOW_SURROGATE);
         verify(mockDelegate).write(highSurrogate);
         verify(mockDelegate).write(lowSurrogate);

@@ -26,8 +26,7 @@ public interface Writer
          *            the {@code File} to write to.
          * @return a new {@code Writer}.
          */
-        Writer newWriter(
-                File file);
+        Writer newWriter(File file);
     }
 
     /**
@@ -41,8 +40,7 @@ public interface Writer
      * @param codePoint
      *            the code point to write.
      */
-    void write(
-            int codePoint);
+    void write(int codePoint);
 
     /**
      * Writes the given text.
@@ -50,8 +48,7 @@ public interface Writer
      * @param text
      *            the text to write.
      */
-    void write(
-            String text);
+    void write(String text);
 
     /**
      * Writes the given text and append an end-of-line. The type of end-of-line depends on the OS.
@@ -59,6 +56,5 @@ public interface Writer
      * @param text
      *            the text to write.
      */
-    void writeLine(
-            String text);
+    void writeLine(String text);
 }

@@ -12,8 +12,7 @@ public interface SourceFilesHashGenerator
      *            the {@code Project} of interest.
      * @return the source files digest.
      */
-    SourceFilesDigest generateUsingCache(
-            Project project);
+    SourceFilesDigest generateUsingCache(Project project);
 
     /**
      * Generates the source files listing for the given {@code Project} in the given directory.
@@ -22,6 +21,5 @@ public interface SourceFilesHashGenerator
      *            the {@code Project} of interest.
      * @return the source files digest.
      */
-    SourceFilesDigest generate(
-            Project project);
+    SourceFilesDigest generate(Project project);
 }

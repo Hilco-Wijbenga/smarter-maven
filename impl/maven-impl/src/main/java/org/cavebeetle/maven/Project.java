@@ -90,8 +90,7 @@ public interface Project
      *            whether to include the project's modules when determining dirtiness.
      * @return the {@code DirtyReason} explaining why this {@code Project} needs to be rebuilt.
      */
-    DirtyReason findDirtyReason(
-            boolean includeModules);
+    DirtyReason findDirtyReason(boolean includeModules);
 
     /**
      * Returns an {@code Iterable<Project>} that includes all dependencies.

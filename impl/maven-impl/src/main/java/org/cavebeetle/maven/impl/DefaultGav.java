@@ -33,17 +33,13 @@ public final class DefaultGav
          *            the {@code SnapshotDetector} instance.
          */
         @Inject
-        public DefaultBuilder(
-                final SnapshotDetector snapshotDetector)
+        public DefaultBuilder(final SnapshotDetector snapshotDetector)
         {
             this.snapshotDetector = snapshotDetector;
         }
 
         @Override
-        public Gav newGav(
-                final GroupId groupId,
-                final ArtifactId artifactId,
-                final Version version)
+        public Gav newGav(final GroupId groupId, final ArtifactId artifactId, final Version version)
         {
             return new DefaultGav(snapshotDetector, groupId, artifactId, version);
         }
@@ -117,8 +113,7 @@ public final class DefaultGav
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {

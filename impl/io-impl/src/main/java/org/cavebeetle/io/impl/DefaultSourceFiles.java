@@ -24,8 +24,7 @@ public final class DefaultSourceFiles
                 Builder
     {
         @Override
-        public SourceFiles newSourceFiles(
-                final File baseDir)
+        public SourceFiles newSourceFiles(final File baseDir)
         {
             return new DefaultSourceFiles(baseDir, true);
         }
@@ -47,9 +46,7 @@ public final class DefaultSourceFiles
      * @param directory
      *            whether the given file is the base directory ({@code true}) or the POM file (@code false).
      */
-    public DefaultSourceFiles(
-            final File file,
-            final boolean directory)
+    public DefaultSourceFiles(final File file, final boolean directory)
     {
         if (directory)
         {
@@ -67,8 +64,7 @@ public final class DefaultSourceFiles
         return files.iterator();
     }
 
-    private List<File> listFiles(
-            final File baseDir)
+    private List<File> listFiles(final File baseDir)
     {
         final List<File> filesFound = new ArrayList<File>();
         for (final File file : baseDir.listFiles())
@@ -85,10 +81,7 @@ public final class DefaultSourceFiles
         return filesFound;
     }
 
-    private void listFiles(
-            final File baseDir,
-            final String currentDir,
-            final List<File> filesFound)
+    private void listFiles(final File baseDir, final String currentDir, final List<File> filesFound)
     {
         final File dir = new File(baseDir, currentDir);
         for (final File file : dir.listFiles())

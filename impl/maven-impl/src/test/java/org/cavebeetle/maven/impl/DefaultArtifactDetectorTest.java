@@ -152,8 +152,7 @@ public final class DefaultArtifactDetectorTest
         assertTrue(artifactDetector.hasArtifactInRemoteRepository(mockMavenProject));
     }
 
-    private File createRandomJar(
-            final String localRepository)
+    private File createRandomJar(final String localRepository)
     {
         try
         {

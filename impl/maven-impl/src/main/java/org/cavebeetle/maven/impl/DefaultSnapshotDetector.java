@@ -17,8 +17,7 @@ public final class DefaultSnapshotDetector
             SnapshotDetector
 {
     @Override
-    public boolean isSnapshot(
-            final MavenProject mavenProject)
+    public boolean isSnapshot(final MavenProject mavenProject)
     {
         try
         {
@@ -33,21 +32,18 @@ public final class DefaultSnapshotDetector
     }
 
     @Override
-    public boolean isSnapshot(
-            final Dependency dependency)
+    public boolean isSnapshot(final Dependency dependency)
     {
         return isSnapshot(dependency.getVersion());
     }
 
     @Override
-    public boolean isSnapshot(
-            final Gav gav)
+    public boolean isSnapshot(final Gav gav)
     {
         return isSnapshot(gav.getVersion().toString());
     }
 
-    private boolean isSnapshot(
-            final String version)
+    private boolean isSnapshot(final String version)
     {
         return version.endsWith("-SNAPSHOT");
     }

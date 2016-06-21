@@ -52,8 +52,7 @@ public final class DefaultInternalApi
      *            the Guice {@code Injector} instance.
      */
     @Inject
-    public DefaultInternalApi(
-            final Injector injector)
+    public DefaultInternalApi(final Injector injector)
     {
         this.injector = injector;
     }
@@ -149,8 +148,7 @@ public final class DefaultInternalApi
     }
 
     @Override
-    public CryptographicHash newCryptographicHash(
-            final CryptographicHashAlgorithm cryptographicHashAlgorithm)
+    public CryptographicHash newCryptographicHash(final CryptographicHashAlgorithm cryptographicHashAlgorithm)
     {
         return injector.getInstance(CryptographicHash.Builder.class).newCryptographicHash(cryptographicHashAlgorithm);
     }
@@ -162,61 +160,50 @@ public final class DefaultInternalApi
     }
 
     @Override
-    public Digest newDigest(
-            final byte[] bytes)
+    public Digest newDigest(final byte[] bytes)
     {
         return injector.getInstance(Digest.Builder.class).newDigest(bytes);
     }
 
     @Override
-    public Gav newGav(
-            final GroupId groupId,
-            final ArtifactId artifactId,
-            final Version version)
+    public Gav newGav(final GroupId groupId, final ArtifactId artifactId, final Version version)
     {
         return injector.getInstance(Gav.Builder.class).newGav(groupId, artifactId, version);
     }
 
     @Override
-    public GroupId newGroupId(
-            final String groupId)
+    public GroupId newGroupId(final String groupId)
     {
         return injector.getInstance(GroupId.Builder.class).newGroupId(groupId);
     }
 
     @Override
-    public ArtifactId newArtifactId(
-            final String artifactId)
+    public ArtifactId newArtifactId(final String artifactId)
     {
         return injector.getInstance(ArtifactId.Builder.class).newArtifactId(artifactId);
     }
 
     @Override
-    public DirtyReason newDirtyReason(
-            final boolean dirty,
-            final String reason)
+    public DirtyReason newDirtyReason(final boolean dirty, final String reason)
     {
         return injector.getInstance(DirtyReason.Builder.class).newDirtyReason(dirty, reason);
     }
 
     @Override
-    public Version newVersion(
-            final String version)
+    public Version newVersion(final String version)
     {
         return injector.getInstance(Version.Builder.class).newVersion(version);
     }
 
     @Override
-    public SourceFilesDigest newSourceFilesDigest(
-            final List<String> sourceFileLines)
+    public SourceFilesDigest newSourceFilesDigest(final List<String> sourceFileLines)
     {
         final SourceFilesDigest.Builder builder = injector.getInstance(SourceFilesDigest.Builder.class);
         return builder.newSourceFilesDigest(sourceFileLines);
     }
 
     @Override
-    public SourceFilesDigest newSourceFilesDigest(
-            final File file)
+    public SourceFilesDigest newSourceFilesDigest(final File file)
     {
         final SourceFilesDigest.Builder builder = injector.getInstance(SourceFilesDigest.Builder.class);
         return builder.newSourceFilesDigest(file);

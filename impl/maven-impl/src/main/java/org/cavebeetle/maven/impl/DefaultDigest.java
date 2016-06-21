@@ -22,8 +22,7 @@ public final class DefaultDigest
                 Builder
     {
         @Override
-        public Digest newDigest(
-                final byte[] bytes)
+        public Digest newDigest(final byte[] bytes)
         {
             return new DefaultDigest(bytes);
         }
@@ -56,8 +55,7 @@ public final class DefaultDigest
      * @param bytes
      *            the byte array that represents the digest.
      */
-    public DefaultDigest(
-            final byte[] bytes)
+    public DefaultDigest(final byte[] bytes)
     {
         checkNotNull(bytes, "Missing 'bytes'.");
         final StringBuilder stringBuilder = new StringBuilder();
@@ -77,8 +75,7 @@ public final class DefaultDigest
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {

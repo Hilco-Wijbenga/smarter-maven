@@ -20,8 +20,7 @@ public interface GavGenerator
      *            the {@code Dependency} of interest.
      * @return the {@code Gav} for the given {@code Dependency} or {@code null}.
      */
-    Gav getGav(
-            Dependency dependency);
+    Gav getGav(Dependency dependency);
 
     /**
      * <p>
@@ -35,6 +34,5 @@ public interface GavGenerator
      *            the {@code MavenProject} of interest.
      * @return the {@code Gav} for the given {@code MavenProject} or {@code null}.
      */
-    Gav getGav(
-            MavenProject mavenProject);
+    Gav getGav(MavenProject mavenProject);
 }

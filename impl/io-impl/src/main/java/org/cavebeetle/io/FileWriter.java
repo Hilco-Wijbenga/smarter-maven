@@ -21,7 +21,6 @@ public interface FileWriter
          *            the {@code File} to write to.
          * @return a new {@code FileWriter}.
          */
-        FileWriter newWriter(
-                File file);
+        FileWriter newWriter(File file);
     }
 }

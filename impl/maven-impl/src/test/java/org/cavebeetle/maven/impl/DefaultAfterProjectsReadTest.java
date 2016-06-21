@@ -65,17 +65,17 @@ public final class DefaultAfterProjectsReadTest
         when(
                 mockAfterProjectsReadInternal
                         .initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder))
-                .thenReturn(mockGavToProjectMap);
+                                .thenReturn(mockGavToProjectMap);
         mockMavenExecutionRequest = mock(MavenExecutionRequest.class);
         selectedProjects = newArrayList();
         when(
                 mockMavenExecutionRequest
                         .getSelectedProjects())
-                .thenReturn(selectedProjects);
+                                .thenReturn(selectedProjects);
         when(
                 mockAfterProjectsReadInternal
                         .getMavenExecutionRequest(mockLogger, mockMavenSession, mockGavToProjectMap))
-                .thenReturn(mockMavenExecutionRequest);
+                                .thenReturn(mockMavenExecutionRequest);
     }
 
     /**
@@ -173,7 +173,7 @@ public final class DefaultAfterProjectsReadTest
         final String errorMessage = "an error";
         when(
                 mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                .thenReturn(of(errorMessage));
+                        .thenReturn(of(errorMessage));
         try
         {
             afterProjectsRead
@@ -194,7 +194,7 @@ public final class DefaultAfterProjectsReadTest
         selectedProjects.add("one");
         when(
                 mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                .thenReturn(Optional.<String> absent());
+                        .thenReturn(Optional.<String> absent());
         afterProjectsRead
                 .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         verify(mockLogger, never()).info(anyString());
@@ -210,10 +210,10 @@ public final class DefaultAfterProjectsReadTest
         final List<MavenProject> dirtyProjects = newArrayList(dirtyProject);
         when(
                 mockAfterProjectsReadInternal.collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap))
-                .thenReturn(dirtyProjects);
+                        .thenReturn(dirtyProjects);
         when(
                 mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                .thenReturn(Optional.<String> absent());
+                        .thenReturn(Optional.<String> absent());
         afterProjectsRead
                 .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         verify(mockLogger, times(2)).info(eq(""));
@@ -230,15 +230,15 @@ public final class DefaultAfterProjectsReadTest
         when(
                 mockAfterProjectsReadInternal
                         .collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap))
-                .thenReturn(dirtyProjects);
+                                .thenReturn(dirtyProjects);
         final MavenProject mockDummyProject = mock(MavenProject.class);
         when(
                 mockAfterProjectsReadInternal
                         .createDummyProjectToIndicateNothingToDo())
-                .thenReturn(mockDummyProject);
+                                .thenReturn(mockDummyProject);
         when(
                 mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                .thenReturn(Optional.<String> absent());
+                        .thenReturn(Optional.<String> absent());
         afterProjectsRead
                 .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         verify(mockLogger).info(eq(""));

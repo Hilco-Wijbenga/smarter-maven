@@ -16,29 +16,25 @@ public final class DummyIoApi
             IoApi
 {
     @Override
-    public InputStream newInputStream(
-            final File file)
+    public InputStream newInputStream(final File file)
     {
         return null;
     }
 
     @Override
-    public InputStream newInputStream(
-            final String text)
+    public InputStream newInputStream(final String text)
     {
         return null;
     }
 
     @Override
-    public SourceFiles newSourceFiles(
-            final File baseDir)
+    public SourceFiles newSourceFiles(final File baseDir)
     {
         return null;
     }
 
     @Override
-    public SourceFiles newSourceFilesForProjectWithoutDirectory(
-            final File pomFile)
+    public SourceFiles newSourceFilesForProjectWithoutDirectory(final File pomFile)
     {
         return null;
     }
@@ -50,29 +46,25 @@ public final class DummyIoApi
     }
 
     @Override
-    public Writer newWriter(
-            final File file)
+    public Writer newWriter(final File file)
     {
         return null;
     }
 
     @Override
-    public TextFileReader newTextFileReader(
-            final File file)
+    public TextFileReader newTextFileReader(final File file)
     {
         return null;
     }
 
     @Override
-    public TextFileReader newTextFileReader(
-            final String text)
+    public TextFileReader newTextFileReader(final String text)
     {
         return null;
     }
 
     @Override
-    public TextFile newTextFile(
-            final File file)
+    public TextFile newTextFile(final File file)
     {
         return null;
     }

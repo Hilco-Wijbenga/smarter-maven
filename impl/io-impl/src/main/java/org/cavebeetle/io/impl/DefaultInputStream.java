@@ -23,15 +23,13 @@ public final class DefaultInputStream
                 Builder
     {
         @Override
-        public InputStream newInputStream(
-                final File file)
+        public InputStream newInputStream(final File file)
         {
             return new DefaultInputStream(file);
         }
 
         @Override
-        public InputStream newInputStream(
-                final String text)
+        public InputStream newInputStream(final String text)
         {
             return new DefaultInputStream(text);
         }
@@ -45,8 +43,7 @@ public final class DefaultInputStream
      * @param file
      *            the file to read from.
      */
-    public DefaultInputStream(
-            final File file)
+    public DefaultInputStream(final File file)
     {
         try
         {
@@ -64,8 +61,7 @@ public final class DefaultInputStream
      * @param text
      *            the text to read from.
      */
-    public DefaultInputStream(
-            final String text)
+    public DefaultInputStream(final String text)
     {
         final byte[] bytes = text.getBytes();
         delegate = new ByteArrayInputStream(bytes);
@@ -85,8 +81,7 @@ public final class DefaultInputStream
     }
 
     @Override
-    public int read(
-            final byte[] buffer)
+    public int read(final byte[] buffer)
     {
         try
         {

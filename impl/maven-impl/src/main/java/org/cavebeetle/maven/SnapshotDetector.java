@@ -15,8 +15,7 @@ public interface SnapshotDetector
      *            the {@code MavenProject} of interest.
      * @return {@code true} if and only if the given {@code MavenProject} has a snapshot version.
      */
-    boolean isSnapshot(
-            MavenProject mavenProject);
+    boolean isSnapshot(MavenProject mavenProject);
 
     /**
      * Returns whether the given {@code Dependency} has a snapshot version.
@@ -25,8 +24,7 @@ public interface SnapshotDetector
      *            the {@code Dependency} of interest.
      * @return {@code true} if and only if the given {@code Dependency} has a snapshot version.
      */
-    boolean isSnapshot(
-            Dependency dependency);
+    boolean isSnapshot(Dependency dependency);
 
     /**
      * Returns whether the given {@code Gav} has a snapshot version.
@@ -35,6 +33,5 @@ public interface SnapshotDetector
      *            the {@code Gav} of interest.
      * @return {@code true} if and only if the given {@code Gav} has a snapshot version.
      */
-    boolean isSnapshot(
-            Gav gav);
+    boolean isSnapshot(Gav gav);
 }

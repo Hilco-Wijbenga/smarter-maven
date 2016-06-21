@@ -17,7 +17,6 @@ public interface Version
          *            the text representing the version.
          * @return a new {@code Version}.
          */
-        Version newVersion(
-                String version);
+        Version newVersion(String version);
     }
 }

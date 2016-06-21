@@ -35,9 +35,7 @@ public final class DefaultAfterProjectsReadInternalTest
         public final Gav GAV;
         public final Project PROJECT;
 
-        public Tuple(
-                final Gav gav,
-                final Project project)
+        public Tuple(final Gav gav, final Project project)
         {
             GAV = gav;
             PROJECT = project;
@@ -241,7 +239,7 @@ public final class DefaultAfterProjectsReadInternalTest
     {
         final List<Tuple> tuples = init(1);
         final GavToProjectMap gavToProjectMap =
-            afterProjectsRead.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder);
+                afterProjectsRead.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder);
         verifyResult(tuples, gavToProjectMap);
     }
 
@@ -253,7 +251,7 @@ public final class DefaultAfterProjectsReadInternalTest
     {
         final List<Tuple> tuples = init(2);
         final GavToProjectMap gavToProjectMap =
-            afterProjectsRead.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder);
+                afterProjectsRead.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder);
         verifyResult(tuples, gavToProjectMap);
     }
 
@@ -265,7 +263,7 @@ public final class DefaultAfterProjectsReadInternalTest
     {
         final List<Tuple> tuples = init(3);
         final GavToProjectMap gavToProjectMap =
-            afterProjectsRead.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder);
+                afterProjectsRead.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder);
         verifyResult(tuples, gavToProjectMap);
     }
 
@@ -278,7 +276,7 @@ public final class DefaultAfterProjectsReadInternalTest
         final MavenExecutionRequest mockMavenExecutionRequest = mock(MavenExecutionRequest.class);
         when(mockMavenSession.getRequest()).thenReturn(mockMavenExecutionRequest);
         final MavenExecutionRequest mavenExecutionRequest =
-            afterProjectsRead.getMavenExecutionRequest(mockLogger, mockMavenSession, mockGavToProjectMap);
+                afterProjectsRead.getMavenExecutionRequest(mockLogger, mockMavenSession, mockGavToProjectMap);
         assertSame(mockMavenExecutionRequest, mavenExecutionRequest);
         verify(mockMavenExecutionListener).init(mockLogger, mockMavenSession, mockGavToProjectMap);
         verify(mockMavenExecutionRequest).setExecutionListener(mockMavenExecutionListener);
@@ -306,7 +304,7 @@ public final class DefaultAfterProjectsReadInternalTest
         when(mockGavToProjectMap.iterator()).thenReturn(mavenProjectGavs.iterator());
         when(mockMavenSession.getProjects()).thenReturn(mavenProjects);
         final List<MavenProject> dirtyProjects =
-            afterProjectsRead.collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap);
+                afterProjectsRead.collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap);
         assertEquals(2, dirtyProjects.size());
         assertSame(mavenProjects.get(0), dirtyProjects.get(0));
         assertSame(mavenProjects.get(2), dirtyProjects.get(1));
@@ -323,8 +321,7 @@ public final class DefaultAfterProjectsReadInternalTest
         assertEquals("(everything is up-to-date).", dummyMavenProject.getVersion());
     }
 
-    private List<Tuple> init(
-            final int count)
+    private List<Tuple> init(final int count)
     {
         final List<MavenProject> mavenProjects = createMavenProjects(count);
         when(mockMavenSession.getProjects()).thenReturn(mavenProjects);
@@ -332,9 +329,7 @@ public final class DefaultAfterProjectsReadInternalTest
         return tuples;
     }
 
-    private void verifyResult(
-            final List<Tuple> tuples,
-            final GavToProjectMap gavToProjectMap)
+    private void verifyResult(final List<Tuple> tuples, final GavToProjectMap gavToProjectMap)
     {
         assertSame(mockGavToProjectMap, gavToProjectMap);
         for (final Tuple tuple : tuples)
@@ -343,8 +338,7 @@ public final class DefaultAfterProjectsReadInternalTest
         }
     }
 
-    private List<MavenProject> createMavenProjects(
-            final int count)
+    private List<MavenProject> createMavenProjects(final int count)
     {
         final List<MavenProject> mockMavenProjects = newArrayList();
         for (int i = 0; i < count; i++)
@@ -355,8 +349,7 @@ public final class DefaultAfterProjectsReadInternalTest
         return mockMavenProjects;
     }
 
-    private List<Tuple> createTuples(
-            final List<MavenProject> mavenProjects)
+    private List<Tuple> createTuples(final List<MavenProject> mavenProjects)
     {
         final List<Tuple> tuples = newArrayList();
         for (final MavenProject mavenProject : mavenProjects)
@@ -367,8 +360,7 @@ public final class DefaultAfterProjectsReadInternalTest
         return tuples;
     }
 
-    private Tuple mockProject(
-            final MavenProject mockMavenProject)
+    private Tuple mockProject(final MavenProject mockMavenProject)
     {
         final Gav mockProjectGav = mock(Gav.class);
         when(mockGavGenerator.getGav(mockMavenProject)).thenReturn(mockProjectGav);
@@ -380,7 +372,7 @@ public final class DefaultAfterProjectsReadInternalTest
                                 mockProjectBuilder,
                                 mockMavenProject,
                                 mockGavToProjectMap))
-                .thenReturn(mockProject);
+                                        .thenReturn(mockProject);
         return new Tuple(mockProjectGav, mockProject);
     }
 }

@@ -35,9 +35,7 @@ public final class DefaultSourceFilesHashGenerator
      *            the dependency's cryptographic digest/hash (as a hexadecimal number).
      * @return the created digest line.
      */
-    public static String createDigestLine(
-            final Gav dependencyGav,
-            final Digest dependencyDigest)
+    public static String createDigestLine(final Gav dependencyGav, final Digest dependencyDigest)
     {
         return dependencyDigest + ":" + dependencyGav;
     }
@@ -56,9 +54,7 @@ public final class DefaultSourceFilesHashGenerator
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultSourceFilesHashGenerator(
-            final IoApi ioApi,
-            final InternalApi internalApi)
+    public DefaultSourceFilesHashGenerator(final IoApi ioApi, final InternalApi internalApi)
     {
         this.ioApi = ioApi;
         this.internalApi = internalApi;
@@ -66,8 +62,7 @@ public final class DefaultSourceFilesHashGenerator
     }
 
     @Override
-    public SourceFilesDigest generateUsingCache(
-            final Project project)
+    public SourceFilesDigest generateUsingCache(final Project project)
     {
         if (!hashCache.containsKey(project))
         {
@@ -80,8 +75,7 @@ public final class DefaultSourceFilesHashGenerator
     }
 
     @Override
-    public SourceFilesDigest generate(
-            final Project project)
+    public SourceFilesDigest generate(final Project project)
     {
         final File targetDir = project.getBuildDir();
         targetDir.mkdirs();
@@ -92,22 +86,19 @@ public final class DefaultSourceFilesHashGenerator
         return sourceFilesDigest;
     }
 
-    private String createDigestLine(
-            final int ignoreLength,
-            final File file)
+    private String createDigestLine(final int ignoreLength, final File file)
     {
         return fileHashGenerator.generate(file) + ":" + file.getPath().substring(ignoreLength);
     }
 
-    private SourceFilesDigest createSourceFilesDigest(
-            final Project project)
+    private SourceFilesDigest createSourceFilesDigest(final Project project)
     {
         final List<String> sourceFileLines = newArrayList();
         final File baseDir = project.getBaseDir();
         final int ignoreLength = baseDir.getPath().length() + 1;
         final SourceFiles sourceFiles = project.isProjectWithoutDirectory()
-            ? ioApi.newSourceFilesForProjectWithoutDirectory(project.getMavenProject().getFile())
-            : ioApi.newSourceFiles(baseDir);
+                ? ioApi.newSourceFilesForProjectWithoutDirectory(project.getMavenProject().getFile())
+                : ioApi.newSourceFiles(baseDir);
         for (final File file : sourceFiles)
         {
             final String digestLine = createDigestLine(ignoreLength, file);
@@ -116,9 +107,7 @@ public final class DefaultSourceFilesHashGenerator
         return internalApi.newSourceFilesDigest(sourceFileLines);
     }
 
-    private void writeSourceFilesDigest(
-            final Writer writer,
-            final SourceFilesDigest sourceFilesDigest)
+    private void writeSourceFilesDigest(final Writer writer, final SourceFilesDigest sourceFilesDigest)
     {
         try
         {

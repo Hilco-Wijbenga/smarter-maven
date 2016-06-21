@@ -20,8 +20,7 @@ public final class DefaultGroupId
                 Builder
     {
         @Override
-        public GroupId newGroupId(
-                final String groupId)
+        public GroupId newGroupId(final String groupId)
         {
             return new DefaultGroupId(groupId);
         }
@@ -35,8 +34,7 @@ public final class DefaultGroupId
      * @param groupId
      *            the text representing the group id.
      */
-    public DefaultGroupId(
-            final String groupId)
+    public DefaultGroupId(final String groupId)
     {
         checkArgument(groupId != null && !groupId.isEmpty(), "Missing 'groupId'.");
         this.groupId = groupId;
@@ -51,8 +49,7 @@ public final class DefaultGroupId
     }
 
     @Override
-    public boolean equals(
-            final Object object)
+    public boolean equals(final Object object)
     {
         if (this == object)
         {

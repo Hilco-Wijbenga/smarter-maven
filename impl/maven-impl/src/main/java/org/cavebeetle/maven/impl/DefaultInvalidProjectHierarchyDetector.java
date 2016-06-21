@@ -40,17 +40,14 @@ public final class DefaultInvalidProjectHierarchyDetector
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultInvalidProjectHierarchyDetector(
-            final InternalApi internalApi)
+    public DefaultInvalidProjectHierarchyDetector(final InternalApi internalApi)
     {
         checkNotNull(internalApi, "Missing 'internalApi'.");
         snapshotDetector = internalApi.getSnapshotDetector();
         gavGenerator = internalApi.getGavGenerator();
     }
 
-    private int checkMaxGroupAndArtifactLength(
-            final int maxGroupAndArtifactLength,
-            final String groupAndArtifact)
+    private int checkMaxGroupAndArtifactLength(final int maxGroupAndArtifactLength, final String groupAndArtifact)
     {
         final int gavLength = groupAndArtifact.length();
         if (maxGroupAndArtifactLength < gavLength)
@@ -61,8 +58,7 @@ public final class DefaultInvalidProjectHierarchyDetector
     }
 
     @Override
-    public Optional<String> getInvalidProjectHierarchyError(
-            final GavToProjectMap gavToProjectMap)
+    public Optional<String> getInvalidProjectHierarchyError(final GavToProjectMap gavToProjectMap)
     {
         final List<String> errors = newArrayList();
         for (final Gav gav : gavToProjectMap)
@@ -134,8 +130,7 @@ public final class DefaultInvalidProjectHierarchyDetector
     }
 
     @Override
-    public List<String> getProjectHierarchyWarnings(
-            final GavToProjectMap gavToProjectMap)
+    public List<String> getProjectHierarchyWarnings(final GavToProjectMap gavToProjectMap)
     {
         final Map<Gav, List<GavTuple>> map = newHashMap();
         for (final Gav gav : gavToProjectMap)
@@ -215,9 +210,7 @@ public final class DefaultInvalidProjectHierarchyDetector
         return warnings;
     }
 
-    private Optional<Gav> findClosestGav(
-            final Gav gav_,
-            final GavToProjectMap gavToProjectMap)
+    private Optional<Gav> findClosestGav(final Gav gav_, final GavToProjectMap gavToProjectMap)
     {
         for (final Gav gav : gavToProjectMap)
         {

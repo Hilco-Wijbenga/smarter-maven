@@ -17,7 +17,6 @@ public interface ArtifactId
          *            the text representing the artifact id.
          * @return a new {@code ArtifactId}.
          */
-        ArtifactId newArtifactId(
-                String artifactId);
+        ArtifactId newArtifactId(String artifactId);
     }
 }

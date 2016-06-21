@@ -36,8 +36,7 @@ public final class DefaultAfterProjectsRead
      *            the {@code InternalApi} instance.
      */
     @Inject
-    public DefaultAfterProjectsRead(
-            final InternalApi internalApi)
+    public DefaultAfterProjectsRead(final InternalApi internalApi)
     {
         checkNotNull(internalApi, "Missing 'internalApi'.");
         afterProjectsReadInternal = internalApi.getAfterProjectsReadInternal();
@@ -56,7 +55,7 @@ public final class DefaultAfterProjectsRead
         checkNotNull(mavenSession, "Missing 'mavenSession'.");
         checkNotNull(projectBuilder, "Missing 'projectBuilder'.");
         final GavToProjectMap gavToProjectMap =
-            afterProjectsReadInternal.initializeGavToProjectMap(logger, mavenSession, projectBuilder);
+                afterProjectsReadInternal.initializeGavToProjectMap(logger, mavenSession, projectBuilder);
         final Optional<String> maybeErrorMessage;
         maybeErrorMessage = invalidProjectHierarchyDetector.getInvalidProjectHierarchyError(gavToProjectMap);
         if (maybeErrorMessage.isPresent())
@@ -65,12 +64,12 @@ public final class DefaultAfterProjectsRead
             throw new BuildAbort(errorMessage);
         }
         final MavenExecutionRequest mavenExecutionRequest =
-            afterProjectsReadInternal.getMavenExecutionRequest(logger, mavenSession, gavToProjectMap);
+                afterProjectsReadInternal.getMavenExecutionRequest(logger, mavenSession, gavToProjectMap);
         if (mavenExecutionRequest.getSelectedProjects().isEmpty())
         {
             logger.info("");
             final List<MavenProject> dirtyProjects =
-                afterProjectsReadInternal.collectDirtyProjects(logger, mavenSession, gavToProjectMap);
+                    afterProjectsReadInternal.collectDirtyProjects(logger, mavenSession, gavToProjectMap);
             if (!dirtyProjects.isEmpty())
             {
                 logger.info("");

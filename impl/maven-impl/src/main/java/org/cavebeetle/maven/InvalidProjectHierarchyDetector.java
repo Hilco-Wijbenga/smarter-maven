@@ -17,8 +17,7 @@ public interface InvalidProjectHierarchyDetector
      *            the {@code GavToProjectMap} with all projects.
      * @return the error message explaining which projects are invalid.
      */
-    Optional<String> getInvalidProjectHierarchyError(
-            GavToProjectMap gavToProjectMap);
+    Optional<String> getInvalidProjectHierarchyError(GavToProjectMap gavToProjectMap);
 
     /**
      * Gets the list of warnings that list the (potential) problems with the project hierarchy.
@@ -27,6 +26,5 @@ public interface InvalidProjectHierarchyDetector
      *            the {@code GavToProjectMap} with all projects.
      * @return the list of warnings that list the (potential) problems with the project hierarchy.
      */
-    List<String> getProjectHierarchyWarnings(
-            GavToProjectMap gavToProjectMap);
+    List<String> getProjectHierarchyWarnings(GavToProjectMap gavToProjectMap);
 }

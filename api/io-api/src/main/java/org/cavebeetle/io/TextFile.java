@@ -21,7 +21,6 @@ public interface TextFile
          *            the {@code File} to write to.
          * @return a new {@code FileWriter}.
          */
-        TextFile newTextFile(
-                File file);
+        TextFile newTextFile(File file);
     }
 }

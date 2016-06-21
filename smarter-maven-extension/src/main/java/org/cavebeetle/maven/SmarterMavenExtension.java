@@ -42,18 +42,14 @@ public final class SmarterMavenExtension
     }
 
     @Override
-    public void afterProjectsRead(
-            final MavenSession session)
-            throws MavenExecutionException
+    public void afterProjectsRead(final MavenSession session) throws MavenExecutionException
     {
         super.afterProjectsRead(session);
         mavenExtension.afterProjectsRead(logger, runtime, session, projectBuilder);
     }
 
     @Override
-    public void afterSessionStart(
-            final MavenSession session)
-            throws MavenExecutionException
+    public void afterSessionStart(final MavenSession session) throws MavenExecutionException
     {
         super.afterSessionStart(session);
         mavenExtension.afterSessionStart(VERSION, logger, runtime, session);
