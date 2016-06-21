@@ -31,7 +31,7 @@
 
     <groupId>org.cavebeetle.maven</groupId>
     <artifactId>maven-impl</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0</version>
 
     <name>Implementation of Maven API</name>
 
@@ -41,13 +41,13 @@
         <dependency>
             <groupId>org.cavebeetle.io</groupId>
             <artifactId>io-api</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <version>3.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.cavebeetle.maven</groupId>
             <artifactId>maven-api</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <version>3.0</version>
         </dependency>
 
         <!-- Scope 'provided' -->
