@@ -1,17 +1,10 @@
 package org.cavebeetle.maven;
 
-import java.io.File;
-
 /**
  * A {@code SourceFilesHashGenerator} facilitates generating digests for a group of source files.
  */
 public interface SourceFilesHashGenerator
 {
-    /**
-     * The name of the file that stores the source file digests (in the "target" directory).
-     */
-    String SOURCE_FILES_LISTING = ".source-files";
-
     /**
      * Generates a {@code Digest} for the source files of the given {@code Project}.
      *
@@ -19,7 +12,7 @@ public interface SourceFilesHashGenerator
      *            the {@code Project} of interest.
      * @return the source files digest.
      */
-    SourceFilesDigest generate(
+    SourceFilesDigest generateUsingCache(
             Project project);
 
     /**
@@ -27,11 +20,8 @@ public interface SourceFilesHashGenerator
      *
      * @param project
      *            the {@code Project} of interest.
-     * @param targetDir
-     *            the "target" directory where the source file listing should be stored.
      * @return the source files digest.
      */
     SourceFilesDigest generate(
-            Project project,
-            File targetDir);
+            Project project);
 }

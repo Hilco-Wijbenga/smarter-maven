@@ -123,6 +123,27 @@ public final class DefaultProject
     }
 
     @Override
+    public boolean isProjectWithoutDirectory()
+    {
+        return !"pom.xml".equals(mavenProject.getFile().getName());
+    }
+
+    @Override
+    public File getSourceFilesFile()
+    {
+        final StringBuilder sourceFilesFileName = new StringBuilder();
+        sourceFilesFileName.append(".source-files");
+        if (isProjectWithoutDirectory())
+        {
+            sourceFilesFileName.append('-');
+            final String pomFileNameWithExtension = mavenProject.getFile().getName();
+            final String pomFileName = pomFileNameWithExtension.substring(0, pomFileNameWithExtension.lastIndexOf('.'));
+            sourceFilesFileName.append(pomFileName);
+        }
+        return new File(buildDir, sourceFilesFileName.toString());
+    }
+
+    @Override
     public File getBaseDir()
     {
         return mavenProject.getBasedir();

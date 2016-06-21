@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.inject.Singleton;
 import org.cavebeetle.io.SourceFiles;
+import com.google.common.collect.Lists;
 
 /**
  * The implementation of {@code SourceFiles}.
@@ -26,7 +27,13 @@ public final class DefaultSourceFiles
         public SourceFiles newSourceFiles(
                 final File baseDir)
         {
-            return new DefaultSourceFiles(baseDir);
+            return new DefaultSourceFiles(baseDir, true);
+        }
+
+        @Override
+        public SourceFiles newSourceFilesForProjectWithoutDirectory(final File pomFile)
+        {
+            return new DefaultSourceFiles(pomFile, false);
         }
     }
 
@@ -35,13 +42,23 @@ public final class DefaultSourceFiles
     /**
      * Creates a new {@code DefaultSourceFiles}.
      *
-     * @param baseDir
-     *            the base directory to search.
+     * @param file
+     *            the base directory to search or the POM file add.
+     * @param directory
+     *            whether the given file is the base directory ({@code true}) or the POM file (@code false).
      */
     public DefaultSourceFiles(
-            final File baseDir)
+            final File file,
+            final boolean directory)
     {
-        files = listFiles(baseDir);
+        if (directory)
+        {
+            files = listFiles(file);
+        }
+        else
+        {
+            files = Lists.newArrayList(file);
+        }
     }
 
     @Override

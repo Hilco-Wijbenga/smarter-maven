@@ -23,5 +23,15 @@ public interface SourceFiles
          */
         SourceFiles newSourceFiles(
                 File baseDir);
+
+        /**
+         * Creates a new {@code SourceFiles} for a project without a directory.
+         *
+         * @param pomFile
+         *            the POM file to list as a source file.
+         * @return a new {@code SourceFiles}.
+         */
+        SourceFiles newSourceFilesForProjectWithoutDirectory(
+                File pomFile);
     }
 }

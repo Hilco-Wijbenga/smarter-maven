@@ -2,7 +2,6 @@ package org.cavebeetle.maven.impl;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.newHashSet;
-import java.io.File;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
@@ -128,7 +127,7 @@ public final class DefaultMavenExecutionListener
             }
             else
             {
-                sourceFilesHashGenerator.generate(project);
+                sourceFilesHashGenerator.generateUsingCache(project);
                 finishedProjects.add(project);
             }
         }
@@ -198,10 +197,16 @@ public final class DefaultMavenExecutionListener
         final MavenProject mavenProject = event.getSession().getCurrentProject();
         if (mavenProject.getArtifact() != null)
         {
-            final File targetDir = new File(mavenProject.getBuild().getDirectory());
             final Gav gav = gavGenerator.getGav(mavenProject);
             final Project project = gavToProjectMap.getProject(gav);
-            sourceFilesHashGenerator.generate(project, targetDir);
+            sourceFilesHashGenerator.generate(project);
+            for (final Project module : project.getModules())
+            {
+                if (module.isProjectWithoutDirectory())
+                {
+                    sourceFilesHashGenerator.generate(module);
+                }
+            }
         }
     }
 

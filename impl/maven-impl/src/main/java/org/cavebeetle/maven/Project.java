@@ -47,6 +47,21 @@ public interface Project
     MavenProject getMavenProject();
 
     /**
+     * Returns whether this is a project consisting of just a POM file (not named "pom.xml") in another project's
+     * directory.
+     *
+     * @return whether this is a project consisting of just a POM file.
+     */
+    boolean isProjectWithoutDirectory();
+
+    /**
+     * Gets the file storing the digests for this {@code Project}.
+     *
+     * @return the file storing the digests for this {@code Project}.
+     */
+    File getSourceFilesFile();
+
+    /**
      * Gets the base directory for the source files of this {@code Project}. Normally, this is the directory that stores
      * the project's POM.
      *

@@ -37,6 +37,13 @@ public final class DummyIoApi
     }
 
     @Override
+    public SourceFiles newSourceFilesForProjectWithoutDirectory(
+            final File pomFile)
+    {
+        return null;
+    }
+
+    @Override
     public Writer newWriter()
     {
         return null;

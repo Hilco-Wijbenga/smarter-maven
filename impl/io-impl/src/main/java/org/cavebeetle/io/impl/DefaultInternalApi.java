@@ -59,6 +59,13 @@ public final class DefaultInternalApi
     }
 
     @Override
+    public SourceFiles newSourceFilesForProjectWithoutDirectory(
+            final File pomFile)
+    {
+        return injector.getInstance(SourceFiles.Builder.class).newSourceFilesForProjectWithoutDirectory(pomFile);
+    }
+
+    @Override
     public StringWriter newWriter()
     {
         return injector.getInstance(StringWriter.Builder.class).newWriter();

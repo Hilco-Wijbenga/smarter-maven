@@ -66,7 +66,7 @@ public final class DefaultSourceFilesHashGenerator
     }
 
     @Override
-    public SourceFilesDigest generate(
+    public SourceFilesDigest generateUsingCache(
             final Project project)
     {
         if (!hashCache.containsKey(project))
@@ -81,11 +81,11 @@ public final class DefaultSourceFilesHashGenerator
 
     @Override
     public SourceFilesDigest generate(
-            final Project project,
-            final File targetDir)
+            final Project project)
     {
+        final File targetDir = project.getBuildDir();
         targetDir.mkdirs();
-        final File projectHashFile = new File(targetDir, SOURCE_FILES_LISTING);
+        final File projectHashFile = project.getSourceFilesFile();
         final Writer writer = ioApi.newWriter(projectHashFile);
         final SourceFilesDigest sourceFilesDigest = createSourceFilesDigest(project);
         writeSourceFilesDigest(writer, sourceFilesDigest);
@@ -105,7 +105,9 @@ public final class DefaultSourceFilesHashGenerator
         final List<String> sourceFileLines = newArrayList();
         final File baseDir = project.getBaseDir();
         final int ignoreLength = baseDir.getPath().length() + 1;
-        final SourceFiles sourceFiles = ioApi.newSourceFiles(baseDir);
+        final SourceFiles sourceFiles = project.isProjectWithoutDirectory()
+            ? ioApi.newSourceFilesForProjectWithoutDirectory(project.getMavenProject().getFile())
+            : ioApi.newSourceFiles(baseDir);
         for (final File file : sourceFiles)
         {
             final String digestLine = createDigestLine(ignoreLength, file);

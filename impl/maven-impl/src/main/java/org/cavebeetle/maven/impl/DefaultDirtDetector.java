@@ -6,7 +6,6 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.cavebeetle.maven.DirtyReason.NOT_DIRTY;
 import static org.cavebeetle.maven.DirtyReason.PUBLISHED;
-import static org.cavebeetle.maven.SourceFilesHashGenerator.SOURCE_FILES_LISTING;
 import static org.cavebeetle.maven.impl.Equalizer.isEqual;
 import java.io.File;
 import java.util.Map;
@@ -110,21 +109,15 @@ public final class DefaultDirtDetector
         final boolean targetDirExists = targetDir.exists();
         if (!targetDirExists)
         {
-            final String projectRootDir = session.getExecutionRootDirectory();
-            final String target = targetDir.getPath().substring(projectRootDir.length() + 1);
-            return internalApi.newDirtyReason(true, "No build directory (" + target + ")");
+            return newNoBuildDirectoryDirtyReason(session, targetDir);
         }
         final boolean artifactInLocalRepository = artifactDetector.hasArtifactInLocalRepository(session, mavenProject);
         if (!artifactInLocalRepository)
         {
-            final File localMavenRepoDir = artifactDetector.getLocalRepositoryDirectory(session);
-            final String userHomeDir = System.getProperty("user.home");
-            final String localMavenRepo = localMavenRepoDir.getPath().startsWith(userHomeDir)
-                ? "~" + localMavenRepoDir.getPath().substring(userHomeDir.length())
-                : localMavenRepoDir.getPath();
-            return internalApi.newDirtyReason(true, "Not in local repo (" + localMavenRepo + ")");
+            return newNotInLocalRepoDirtyReason(session);
         }
-        final File projectHashFile = new File(targetDir, SOURCE_FILES_LISTING);
+        final Project project = gavToProjectMap.getProject(gavGenerator.getGav(mavenProject));
+        final File projectHashFile = project.getSourceFilesFile();
         final boolean projectHashFileExists = projectHashFile.exists();
         final String projectRootDir = session.getExecutionRootDirectory();
         final String projectHash = projectHashFile.getPath().substring(projectRootDir.length() + 1);
@@ -132,38 +125,22 @@ public final class DefaultDirtDetector
         {
             return internalApi.newDirtyReason(true, "No source file digest (" + projectHash + ")");
         }
-        final Project project = gavToProjectMap.getProject(gavGenerator.getGav(mavenProject));
         final SourceFilesDigest expectedProjectSourceFilesDigest = internalApi.newSourceFilesDigest(projectHashFile);
         final int digestLength = expectedProjectSourceFilesDigest.getDigest().toString().length();
         final Set<String> files = newHashSet();
         final Map<String, String> expectedFileToDigestMap = newHashMap();
         try
         {
-            for (final String line : expectedProjectSourceFilesDigest)
-            {
-                final String digest = line.substring(0, digestLength);
-                final String file = line.substring(digestLength + 1);
-                files.add(file);
-                expectedFileToDigestMap.put(file, digest);
-            }
+            loadExpectedFileToDigestMap(expectedProjectSourceFilesDigest, digestLength, files, expectedFileToDigestMap);
         }
         catch (final Exception exception)
         {
             return internalApi.newDirtyReason(true, "Invalid/corrupt source file digest (" + projectHash + ")");
         }
-        final SourceFilesDigest actualProjectSourceFilesDigest = sourceFilesHashGenerator.generate(project);
+        final SourceFilesDigest actualProjectSourceFilesDigest = sourceFilesHashGenerator.generateUsingCache(project);
         if (!isEqual(expectedProjectSourceFilesDigest, actualProjectSourceFilesDigest))
         {
-            final Map<String, String> actualFileToDigestMap = newHashMap();
-            for (final String line : actualProjectSourceFilesDigest)
-            {
-                final String digest = line.substring(0, digestLength);
-                final String file = line.substring(digestLength + 1);
-                files.add(file);
-                actualFileToDigestMap.put(file, digest);
-            }
-            final String changedFile = findChangedFile(files, expectedFileToDigestMap, actualFileToDigestMap);
-            return internalApi.newDirtyReason(true, changedFile);
+            return newFileChangedDirtyReason(digestLength, files, expectedFileToDigestMap, actualProjectSourceFilesDigest);
         }
         final Optional<Project> maybeFirstDirtyDependency = hasDirtyDependency(project, includeModules);
         if (maybeFirstDirtyDependency.isPresent())
@@ -171,6 +148,50 @@ public final class DefaultDirtDetector
             return internalApi.newDirtyReason(true, maybeFirstDirtyDependency.get().getGav().toString());
         }
         return NOT_DIRTY;
+    }
+
+    private DirtyReason newNoBuildDirectoryDirtyReason(final MavenSession session, final File targetDir)
+    {
+        final String projectRootDir = session.getExecutionRootDirectory();
+        final String target = targetDir.getPath().substring(projectRootDir.length() + 1);
+        return internalApi.newDirtyReason(true, "No build directory (" + target + ")");
+    }
+
+    private DirtyReason newNotInLocalRepoDirtyReason(final MavenSession session)
+    {
+        final File localMavenRepoDir = artifactDetector.getLocalRepositoryDirectory(session);
+        final String userHomeDir = System.getProperty("user.home");
+        final String localMavenRepo = localMavenRepoDir.getPath().startsWith(userHomeDir)
+            ? "~" + localMavenRepoDir.getPath().substring(userHomeDir.length())
+            : localMavenRepoDir.getPath();
+        return internalApi.newDirtyReason(true, "Not in local repo (" + localMavenRepo + ")");
+    }
+
+    private DirtyReason newFileChangedDirtyReason(
+            final int digestLength,
+            final Set<String> files,
+            final Map<String, String> expectedFileToDigestMap,
+            final SourceFilesDigest actualProjectSourceFilesDigest)
+    {
+        final Map<String, String> actualFileToDigestMap = newHashMap();
+        loadExpectedFileToDigestMap(actualProjectSourceFilesDigest, digestLength, files, actualFileToDigestMap);
+        final String changedFile = findChangedFile(files, expectedFileToDigestMap, actualFileToDigestMap);
+        return internalApi.newDirtyReason(true, changedFile);
+    }
+
+    private void loadExpectedFileToDigestMap(
+            final SourceFilesDigest expectedProjectSourceFilesDigest,
+            final int digestLength,
+            final Set<String> files,
+            final Map<String, String> expectedFileToDigestMap)
+    {
+        for (final String line : expectedProjectSourceFilesDigest)
+        {
+            final String digest = line.substring(0, digestLength);
+            final String file = line.substring(digestLength + 1);
+            files.add(file);
+            expectedFileToDigestMap.put(file, digest);
+        }
     }
 
     private String findChangedFile(
