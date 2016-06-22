@@ -31,7 +31,7 @@
 
     <groupId>org.cavebeetle.maven</groupId>
     <artifactId>maven-impl</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
 
     <name>Implementation of Maven API</name>
 

@@ -134,4 +134,13 @@ public final class DefaultAfterProjectsReadInternal
         dummyProject.setVersion("(everything is up-to-date).");
         return dummyProject;
     }
+
+    @Override
+    public MavenProject createDummyProjectToIndicateProjectHierarchyCheck()
+    {
+        final MavenProject dummyProject = new MavenProject();
+        dummyProject.setArtifactId("nothing");
+        dummyProject.setVersion("(only checking the project hierarchy).");
+        return dummyProject;
+    }
 }

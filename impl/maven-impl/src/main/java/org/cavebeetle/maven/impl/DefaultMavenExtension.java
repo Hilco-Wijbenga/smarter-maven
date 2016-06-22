@@ -5,7 +5,6 @@ import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.rtinfo.RuntimeInformation;
-import org.cavebeetle.maven.ActiveDetector;
 import org.cavebeetle.maven.AfterProjectsRead;
 import org.cavebeetle.maven.AfterSessionStart;
 import org.cavebeetle.maven.InternalApi;
@@ -21,7 +20,6 @@ public final class DefaultMavenExtension
         implements
             MavenExtension
 {
-    private final ActiveDetector activeDetector;
     private final AfterSessionStart afterSessionStart;
     private final AfterProjectsRead afterProjectsRead;
 
@@ -34,7 +32,6 @@ public final class DefaultMavenExtension
     @Inject
     public DefaultMavenExtension(final InternalApi internalApi)
     {
-        activeDetector = internalApi.getActiveDetector();
         afterSessionStart = internalApi.getAfterSessionStart();
         afterProjectsRead = internalApi.getAfterProjectsRead();
     }
@@ -46,10 +43,7 @@ public final class DefaultMavenExtension
             final MavenSession session,
             final ProjectBuilder projectBuilder)
     {
-        if (activeDetector.isActive(session))
-        {
-            afterProjectsRead.afterProjectsRead(logger, runtime, session, projectBuilder);
-        }
+        afterProjectsRead.afterProjectsRead(logger, runtime, session, projectBuilder);
     }
 
     @Override
@@ -59,9 +53,6 @@ public final class DefaultMavenExtension
             final RuntimeInformation runtime,
             final MavenSession session)
     {
-        if (activeDetector.isActive(session))
-        {
-            afterSessionStart.afterSessionStart(version, logger, runtime, session);
-        }
+        afterSessionStart.afterSessionStart(version, logger, runtime, session);
     }
 }

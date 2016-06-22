@@ -1,6 +1,7 @@
 package org.cavebeetle.maven.impl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Properties;
 import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
 import org.cavebeetle.maven.ActiveDetector;
@@ -14,16 +15,23 @@ public final class DefaultActiveDetector
             ActiveDetector
 {
     @Override
-    public boolean isActive(final MavenSession session)
+    public boolean isSmarterMavenActive(final MavenSession session)
     {
         checkNotNull(session, "Missing 'session'.");
-        for (final String goal : session.getGoals())
-        {
-            if (goal.equals("install"))
-            {
-                return true;
-            }
-        }
-        return false;
+        return session.getUserProperties().containsKey(ActiveDetector.SMARTER_MAVEN_ACTIVE_PROPERTY);
+    }
+
+    @Override
+    public boolean showProjectHierarchyWarnings(final MavenSession session)
+    {
+        checkNotNull(session, "Missing 'session'.");
+        final Properties userProperties = session.getUserProperties();
+        return userProperties.containsKey(ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY);
+    }
+
+    @Override
+    public boolean showBanner(final MavenSession session)
+    {
+        return isSmarterMavenActive(session) || showProjectHierarchyWarnings(session);
     }
 }

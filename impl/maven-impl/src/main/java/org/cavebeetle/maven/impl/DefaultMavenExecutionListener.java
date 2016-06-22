@@ -11,6 +11,7 @@ import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionListener;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
+import org.cavebeetle.maven.ActiveDetector;
 import org.cavebeetle.maven.Gav;
 import org.cavebeetle.maven.GavGenerator;
 import org.cavebeetle.maven.GavToProjectMap;
@@ -29,6 +30,7 @@ public final class DefaultMavenExecutionListener
         implements
             MavenExecutionListener
 {
+    private final ActiveDetector activeDetector;
     private final GavGenerator gavGenerator;
     private final SourceFilesHashGenerator sourceFilesHashGenerator;
     private final InvalidProjectHierarchyDetector invalidProjectHierarchyDetector;
@@ -45,6 +47,7 @@ public final class DefaultMavenExecutionListener
     @Inject
     public DefaultMavenExecutionListener(final InternalApi internalApi)
     {
+        activeDetector = internalApi.getActiveDetector();
         gavGenerator = internalApi.getGavGenerator();
         sourceFilesHashGenerator = internalApi.getSourceFilesHashGenerator();
         invalidProjectHierarchyDetector = internalApi.getInvalidProjectHierarchyDetector();
@@ -176,7 +179,7 @@ public final class DefaultMavenExecutionListener
     {
         delegate.projectSucceeded(event);
         final MavenProject mavenProject = event.getSession().getCurrentProject();
-        if (mavenProject.getArtifact() != null)
+        if (activeDetector.isSmarterMavenActive(event.getSession()) && mavenProject.getArtifact() != null)
         {
             final Gav gav = gavGenerator.getGav(mavenProject);
             final Project project = gavToProjectMap.getProject(gav);
@@ -201,22 +204,25 @@ public final class DefaultMavenExecutionListener
     public void sessionEnded(final ExecutionEvent event)
     {
         delegate.sessionEnded(event);
-        final List<String> warnings = invalidProjectHierarchyDetector.getProjectHierarchyWarnings(gavToProjectMap);
-        if (!warnings.isEmpty())
+        if (activeDetector.showProjectHierarchyWarnings(event.getSession()))
         {
-            logger.warn("");
-            logger.warn("");
-            logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            logger.warn("!!!                            !!!");
-            logger.warn("!!! PROJECT HIERARCHY WARNINGS !!!");
-            logger.warn("!!!                            !!!");
-            logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            for (final String warning : warnings)
+            final List<String> warnings = invalidProjectHierarchyDetector.getProjectHierarchyWarnings(gavToProjectMap);
+            if (!warnings.isEmpty())
             {
-                logger.warn(warning);
+                logger.warn("");
+                logger.warn("");
+                logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                logger.warn("!!!                            !!!");
+                logger.warn("!!! PROJECT HIERARCHY WARNINGS !!!");
+                logger.warn("!!!                            !!!");
+                logger.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                for (final String warning : warnings)
+                {
+                    logger.warn(warning);
+                }
+                logger.warn("");
+                logger.warn("");
             }
-            logger.warn("");
-            logger.warn("");
         }
     }
 }

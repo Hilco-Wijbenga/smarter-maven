@@ -66,4 +66,13 @@ public interface AfterProjectsReadInternal
      * @return a dummy Maven project to create the correct output when nothing needs to be rebuilt.
      */
     MavenProject createDummyProjectToIndicateNothingToDo();
+
+    /**
+     * Creates a dummy Maven project to create the correct output when only the project hierarchy warnings should be
+     * shown.
+     *
+     * @return a dummy Maven project to create the correct output when only the project hierarchy warnings should be
+     *         shown.
+     */
+    MavenProject createDummyProjectToIndicateProjectHierarchyCheck();
 }

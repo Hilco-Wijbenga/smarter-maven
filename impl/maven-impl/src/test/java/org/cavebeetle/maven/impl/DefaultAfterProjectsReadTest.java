@@ -19,6 +19,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.rtinfo.RuntimeInformation;
+import org.cavebeetle.maven.ActiveDetector;
 import org.cavebeetle.maven.AfterProjectsReadInternal;
 import org.cavebeetle.maven.GavToProjectMap;
 import org.cavebeetle.maven.InternalApi;
@@ -26,6 +27,8 @@ import org.cavebeetle.maven.InvalidProjectHierarchyDetector;
 import org.codehaus.plexus.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 import com.google.common.base.Optional;
 
 /**
@@ -37,6 +40,7 @@ public final class DefaultAfterProjectsReadTest
     private RuntimeInformation mockRuntimeInformation;
     private MavenSession mockMavenSession;
     private ProjectBuilder mockProjectBuilder;
+    private ActiveDetector mockActiveDetector;
     private InternalApi mockInternalApi;
     private GavToProjectMap mockGavToProjectMap;
     private AfterProjectsReadInternal mockAfterProjectsReadInternal;
@@ -48,6 +52,7 @@ public final class DefaultAfterProjectsReadTest
     /**
      * Sets up each unit test.
      */
+    @SuppressWarnings("boxing")
     @Before
     public void setUp()
     {
@@ -55,27 +60,25 @@ public final class DefaultAfterProjectsReadTest
         mockRuntimeInformation = mock(RuntimeInformation.class);
         mockMavenSession = mock(MavenSession.class);
         mockProjectBuilder = mock(ProjectBuilder.class);
+        mockActiveDetector = mock(ActiveDetector.class);
         mockInternalApi = mock(InternalApi.class);
+        Mockito.when(mockInternalApi.getActiveDetector()).thenReturn(mockActiveDetector);
+        Mockito.when(mockActiveDetector.isSmarterMavenActive(Matchers.any(MavenSession.class))).thenReturn(true);
+        Mockito.when(mockActiveDetector.showBanner(Matchers.any(MavenSession.class))).thenReturn(true);
         mockGavToProjectMap = mock(GavToProjectMap.class);
         mockAfterProjectsReadInternal = mock(AfterProjectsReadInternal.class);
         when(mockInternalApi.getAfterProjectsReadInternal()).thenReturn(mockAfterProjectsReadInternal);
         mockInvalidProjectHierarchyDetector = mock(InvalidProjectHierarchyDetector.class);
         when(mockInternalApi.getInvalidProjectHierarchyDetector()).thenReturn(mockInvalidProjectHierarchyDetector);
         afterProjectsRead = new DefaultAfterProjectsRead(mockInternalApi);
-        when(
-                mockAfterProjectsReadInternal
-                        .initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder))
-                                .thenReturn(mockGavToProjectMap);
+        when(mockAfterProjectsReadInternal.initializeGavToProjectMap(mockLogger, mockMavenSession, mockProjectBuilder))
+                .thenReturn(mockGavToProjectMap);
         mockMavenExecutionRequest = mock(MavenExecutionRequest.class);
         selectedProjects = newArrayList();
-        when(
-                mockMavenExecutionRequest
-                        .getSelectedProjects())
-                                .thenReturn(selectedProjects);
-        when(
-                mockAfterProjectsReadInternal
-                        .getMavenExecutionRequest(mockLogger, mockMavenSession, mockGavToProjectMap))
-                                .thenReturn(mockMavenExecutionRequest);
+        when(mockMavenExecutionRequest.getSelectedProjects())
+                .thenReturn(selectedProjects);
+        when(mockAfterProjectsReadInternal.getMavenExecutionRequest(mockLogger, mockMavenSession, mockGavToProjectMap))
+                .thenReturn(mockMavenExecutionRequest);
     }
 
     /**
@@ -171,13 +174,11 @@ public final class DefaultAfterProjectsReadTest
     {
         selectedProjects.add("one");
         final String errorMessage = "an error";
-        when(
-                mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                        .thenReturn(of(errorMessage));
+        when(mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
+                .thenReturn(of(errorMessage));
         try
         {
-            afterProjectsRead
-                    .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
+            afterProjectsRead.afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         }
         catch (final BuildAbort e)
         {
@@ -192,11 +193,9 @@ public final class DefaultAfterProjectsReadTest
     public final void the_Smarter_Maven_extension_does_nothing_when_invoked_with_a_list_of_projects_to_build()
     {
         selectedProjects.add("one");
-        when(
-                mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                        .thenReturn(Optional.<String> absent());
-        afterProjectsRead
-                .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
+        when(mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
+                .thenReturn(Optional.<String> absent());
+        afterProjectsRead.afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         verify(mockLogger, never()).info(anyString());
     }
 
@@ -208,14 +207,11 @@ public final class DefaultAfterProjectsReadTest
     {
         final MavenProject dirtyProject = mock(MavenProject.class);
         final List<MavenProject> dirtyProjects = newArrayList(dirtyProject);
-        when(
-                mockAfterProjectsReadInternal.collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap))
-                        .thenReturn(dirtyProjects);
-        when(
-                mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                        .thenReturn(Optional.<String> absent());
-        afterProjectsRead
-                .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
+        when(mockAfterProjectsReadInternal.collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap))
+                .thenReturn(dirtyProjects);
+        when(mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
+                .thenReturn(Optional.<String> absent());
+        afterProjectsRead.afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         verify(mockLogger, times(2)).info(eq(""));
         verify(mockMavenSession).setProjects(dirtyProjects);
     }
@@ -227,20 +223,14 @@ public final class DefaultAfterProjectsReadTest
     public final void a_dummy_Maven_project_is_added_to_the_list_of_dirty_projects_if_no_dirty_projects_are_found()
     {
         final List<MavenProject> dirtyProjects = newArrayList();
-        when(
-                mockAfterProjectsReadInternal
-                        .collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap))
-                                .thenReturn(dirtyProjects);
+        when(mockAfterProjectsReadInternal.collectDirtyProjects(mockLogger, mockMavenSession, mockGavToProjectMap))
+                .thenReturn(dirtyProjects);
         final MavenProject mockDummyProject = mock(MavenProject.class);
-        when(
-                mockAfterProjectsReadInternal
-                        .createDummyProjectToIndicateNothingToDo())
-                                .thenReturn(mockDummyProject);
-        when(
-                mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
-                        .thenReturn(Optional.<String> absent());
-        afterProjectsRead
-                .afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
+        when(mockAfterProjectsReadInternal.createDummyProjectToIndicateNothingToDo())
+                .thenReturn(mockDummyProject);
+        when(mockInvalidProjectHierarchyDetector.getInvalidProjectHierarchyError(mockGavToProjectMap))
+                .thenReturn(Optional.<String> absent());
+        afterProjectsRead.afterProjectsRead(mockLogger, mockRuntimeInformation, mockMavenSession, mockProjectBuilder);
         verify(mockLogger).info(eq(""));
         verify(mockMavenSession).setProjects(dirtyProjects);
         assertEquals(1, dirtyProjects.size());

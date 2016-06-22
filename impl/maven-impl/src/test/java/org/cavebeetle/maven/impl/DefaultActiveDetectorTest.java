@@ -8,12 +8,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import java.util.List;
+import java.util.Properties;
 import org.apache.maven.execution.MavenSession;
+import org.cavebeetle.maven.ActiveDetector;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.collect.Lists;
+import org.mockito.Mockito;
 
 /**
  * The unit tests for {@code DefaultActiveDetector}.
@@ -41,7 +41,7 @@ public class DefaultActiveDetectorTest
     {
         try
         {
-            activeDetector.isActive(null);
+            activeDetector.isSmarterMavenActive(null);
             fail("Expected a NullPointerException.");
         }
         catch (final NullPointerException e)
@@ -50,36 +50,27 @@ public class DefaultActiveDetectorTest
         }
     }
 
-    /**
-     * Tests that with goals {"clean"} Smarter Maven is not active.
-     */
+    @SuppressWarnings("boxing")
     @Test
-    public final void with_goals_clean_Smarter_Maven_is_not_active()
+    public final void isSmarterMaven_is_true_depending_on_the_SMARTER_MAVEN_ACTIVE_PROPERTY()
     {
-        final List<String> goals = Lists.newArrayList("clean");
-        when(mockMavenSession.getGoals()).thenReturn(goals);
-        assertFalse(activeDetector.isActive(mockMavenSession));
+        final Properties mockProperties = Mockito.mock(Properties.class);
+        Mockito.when(mockMavenSession.getUserProperties()).thenReturn(mockProperties);
+        Mockito.when(mockProperties.containsKey(ActiveDetector.SMARTER_MAVEN_ACTIVE_PROPERTY)).thenReturn(true);
+        assertTrue(activeDetector.isSmarterMavenActive(mockMavenSession));
+        Mockito.when(mockProperties.containsKey(ActiveDetector.SMARTER_MAVEN_ACTIVE_PROPERTY)).thenReturn(false);
+        assertFalse(activeDetector.isSmarterMavenActive(mockMavenSession));
     }
 
-    /**
-     * Tests that with goals {"clean", "install"} Smarter Maven is active.
-     */
+    @SuppressWarnings("boxing")
     @Test
-    public final void with_goals_clean_install_Smarter_Maven_is_active()
+    public final void showProjectHierarchyWarnings_is_true_depending_on_the_SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY()
     {
-        final List<String> goals = Lists.newArrayList("clean", "install");
-        when(mockMavenSession.getGoals()).thenReturn(goals);
-        assertTrue(activeDetector.isActive(mockMavenSession));
-    }
-
-    /**
-     * Tests that with goals {"install"} Smarter Maven is active.
-     */
-    @Test
-    public final void with_goals_install_Smarter_Maven_is_active()
-    {
-        final List<String> goals = Lists.newArrayList("install");
-        when(mockMavenSession.getGoals()).thenReturn(goals);
-        assertTrue(activeDetector.isActive(mockMavenSession));
+        final Properties mockProperties = Mockito.mock(Properties.class);
+        Mockito.when(mockMavenSession.getUserProperties()).thenReturn(mockProperties);
+        Mockito.when(mockProperties.containsKey(ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY)).thenReturn(true);
+        assertTrue(activeDetector.showProjectHierarchyWarnings(mockMavenSession));
+        Mockito.when(mockProperties.containsKey(ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY)).thenReturn(false);
+        assertFalse(activeDetector.showProjectHierarchyWarnings(mockMavenSession));
     }
 }

@@ -9,10 +9,14 @@ import static org.mockito.Mockito.when;
 import java.util.Random;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.rtinfo.RuntimeInformation;
+import org.cavebeetle.maven.ActiveDetector;
+import org.cavebeetle.maven.InternalApi;
 import org.cavebeetle.maven.MavenVersion;
 import org.codehaus.plexus.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 /**
  * The unit tests for {@code DefaultAfterSessionStart}.
@@ -23,11 +27,14 @@ public final class DefaultAfterSessionStartTest
     private Logger mockLogger;
     private RuntimeInformation mockRuntimeInformation;
     private MavenSession mockMavenSession;
+    private ActiveDetector mockActiveDetector;
+    private InternalApi mockInternalApi;
     private DefaultAfterSessionStart afterSessionStart;
 
     /**
      * Sets up each unit test.
      */
+    @SuppressWarnings("boxing")
     @Before
     public void setUp()
     {
@@ -35,7 +42,11 @@ public final class DefaultAfterSessionStartTest
         mockLogger = mock(Logger.class);
         mockRuntimeInformation = mock(RuntimeInformation.class);
         mockMavenSession = mock(MavenSession.class);
-        afterSessionStart = new DefaultAfterSessionStart();
+        mockActiveDetector = mock(ActiveDetector.class);
+        mockInternalApi = mock(InternalApi.class);
+        Mockito.when(mockInternalApi.getActiveDetector()).thenReturn(mockActiveDetector);
+        Mockito.when(mockActiveDetector.showBanner(Matchers.any(MavenSession.class))).thenReturn(true);
+        afterSessionStart = new DefaultAfterSessionStart(mockInternalApi);
     }
 
     /**

@@ -31,7 +31,7 @@
 
     <groupId>org.cavebeetle.maven</groupId>
     <artifactId>smarter-maven-extension</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
 
     <name>Smarter Maven Extension</name>
 
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.cavebeetle.maven</groupId>
             <artifactId>maven-impl</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
         </dependency>
 
         <!-- Scope 'provided' -->

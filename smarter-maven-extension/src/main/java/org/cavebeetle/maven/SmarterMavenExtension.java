@@ -2,6 +2,7 @@ package org.cavebeetle.maven;
 
 import static com.google.inject.Guice.createInjector;
 import static org.cavebeetle.maven.SmartMavenExtensionVersion.VERSION;
+import java.util.Properties;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
@@ -52,6 +53,24 @@ public final class SmarterMavenExtension
     public void afterSessionStart(final MavenSession session) throws MavenExecutionException
     {
         super.afterSessionStart(session);
+        final Properties userProperties = session.getUserProperties();
+        for (final String goal : session.getGoals())
+        {
+            if ("install".equals(goal))
+            {
+                userProperties.setProperty(ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY, "TRUE");
+                userProperties.setProperty(ActiveDetector.SMARTER_MAVEN_ACTIVE_PROPERTY, "TRUE");
+            }
+            else if (ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY.equals(goal))
+            {
+                userProperties.setProperty(ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY, "TRUE");
+            }
+        }
+        session.getGoals().remove(ActiveDetector.SHOW_PROJECT_HIERARCHY_WARNINGS_PROPERTY);
+        if (session.getGoals().isEmpty())
+        {
+            session.getGoals().add("validate");
+        }
         mavenExtension.afterSessionStart(VERSION, logger, runtime, session);
     }
 }
